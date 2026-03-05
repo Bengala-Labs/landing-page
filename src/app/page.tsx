@@ -7,6 +7,52 @@ export default function Home() {
   const [videoEnded, setVideoEnded] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const cursorRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    let mouseX = 0;
+    let mouseY = 0;
+    let outlineX = 0;
+    let outlineY = 0;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+
+      if (cursorRef.current && cursorRef.current.style.opacity === "0") {
+        cursorRef.current.style.opacity = "1";
+      }
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+
+    const animate = () => {
+      const dx = mouseX - outlineX;
+      const dy = mouseY - outlineY;
+
+      // Smooth easing 
+      outlineX += dx * 0.08;
+      outlineY += dy * 0.08;
+
+      if (cursorRef.current) {
+        cursorRef.current.style.transform = `translate(${outlineX}px, ${outlineY}px)`;
+      }
+
+      requestAnimationFrame(animate);
+    };
+
+    // Start animation loop
+    const animationId = requestAnimationFrame(animate);
+
+    if (cursorRef.current) {
+      cursorRef.current.style.opacity = "0"; // hidden initially
+    }
+
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      cancelAnimationFrame(animationId);
+    };
+  }, []);
 
   useEffect(() => {
     // Slight delay for initial entrance animation smoothness
@@ -50,7 +96,18 @@ export default function Home() {
   ];
 
   return (
-    <main className="relative h-screen w-screen overflow-hidden bg-[#080414] text-white font-sans select-none pointer-events-none">
+    <main className="relative h-[100dvh] w-screen overflow-hidden bg-[#080414] text-white font-sans">
+
+      {/* Dynamic Cursor Glow */}
+      <div
+        ref={cursorRef}
+        className="pointer-events-none fixed top-0 left-0 w-[800px] h-[800px] -mt-[400px] -ml-[400px] rounded-full mix-blend-screen transition-opacity duration-[1500ms] ease-out z-30"
+        style={{
+          background: "radial-gradient(circle, rgba(200,200,220,0.12) 0%, rgba(200,200,220,0.03) 30%, rgba(200,200,220,0) 65%)",
+          opacity: 0,
+          willChange: "transform",
+        }}
+      />
 
       {/* Noise Overlay */}
       <div
@@ -98,26 +155,26 @@ export default function Home() {
       <div className={`absolute bottom-1/4 right-12 w-[1px] h-48 bg-gradient-to-b from-white/0 via-white/20 to-white/0 transition-all duration-[3000ms] delay-[1200ms] ${isLoaded ? "opacity-100 scale-y-100" : "opacity-0 scale-y-0 origin-bottom"}`} />
 
       {/* Main Content */}
-      <div className="relative z-10 w-full h-full flex flex-col justify-end px-6 pb-16 md:px-12 md:pb-24">
+      <div className="relative z-10 w-full h-full flex flex-col pt-24 pb-8 px-6 md:pt-40 md:pb-24 md:px-12">
 
-        <div className="flex flex-col lg:flex-row lg:items-end justify-between w-full max-w-[1800px] mx-auto gap-16 lg:gap-24">
+        <div className="mt-auto flex flex-col lg:flex-row lg:items-end justify-between w-full max-w-[1800px] mx-auto gap-8 lg:gap-24">
 
           {/* Typography Section */}
           <div className={`flex-1 transition-all duration-[2000ms] delay-[800ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${isLoaded ? "translate-y-0 opacity-100" : "translate-y-24 opacity-0"}`}>
-            <h1 className="text-[3.5rem] leading-[1.05] md:text-[5rem] lg:text-[7.5rem] lg:leading-[0.95] tracking-[-0.03em] font-medium text-white/95 mix-blend-plus-lighter">
+            <h1 className="text-[2.75rem] leading-[1.1] sm:text-[3.5rem] sm:leading-[1.05] md:text-[5rem] lg:text-[7.5rem] lg:leading-[0.95] tracking-[-0.03em] font-medium text-white/95 mix-blend-plus-lighter">
               <span className="block overflow-hidden pb-1 lg:pb-3">
                 <span className={`block transition-transform duration-[2000ms] delay-[900ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${isLoaded ? "translate-y-0" : "translate-y-[120%]"}`}>Evolucionando</span>
               </span>
               <span className="block overflow-hidden pb-1 lg:pb-3">
                 <span className={`block text-white/40 italic font-light pr-4 transition-transform duration-[2000ms] delay-[1000ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${isLoaded ? "translate-y-0" : "translate-y-[120%]"}`}>operaciones con</span>
               </span>
-              <span className="block overflow-hidden">
+              <span className="block overflow-hidden pb-2 lg:pb-4">
                 <span className={`block transition-transform duration-[2000ms] delay-[1100ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${isLoaded ? "translate-y-0" : "translate-y-[120%]"}`}>agentes IA.</span>
               </span>
             </h1>
 
             {/* Contact Info */}
-            <div className={`mt-12 lg:mt-24 transition-all duration-[2000ms] delay-[1500ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${isLoaded ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"}`}>
+            <div className={`mt-8 sm:mt-12 lg:mt-24 transition-all duration-[2000ms] delay-[1500ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${isLoaded ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"}`}>
               <p className="text-sm lg:text-base font-light text-white/30 tracking-wider">
                 Escríbenos al <span className="text-white/70 font-normal">hola@bengala.ai</span>
               </p>
@@ -125,11 +182,11 @@ export default function Home() {
           </div>
 
           {/* Minimal Products List */}
-          <div className="flex flex-col gap-6 lg:gap-10 lg:w-[480px] shrink-0">
+          <div className="flex flex-col gap-5 sm:gap-6 lg:gap-10 lg:w-[480px] shrink-0">
             {products.map((product, index) => (
               <div
                 key={product.id}
-                className={`flex items-start gap-6 border-t border-white/10 pt-6 transition-all duration-[2000ms] ease-[cubic-bezier(0.16,1,0.3,1)]`}
+                className={`flex items-start gap-4 sm:gap-6 border-t border-white/10 pt-4 sm:pt-6 transition-all duration-[2000ms] ease-[cubic-bezier(0.16,1,0.3,1)]`}
                 style={{
                   transitionDelay: `${1400 + (index * 200)}ms`,
                   opacity: isLoaded ? 1 : 0,
@@ -140,7 +197,7 @@ export default function Home() {
                   {product.number}
                 </div>
                 <div className="flex flex-col">
-                  <h3 className="text-lg lg:text-2xl font-normal text-white/90 tracking-tight mb-2 lg:mb-3">
+                  <h3 className="text-base sm:text-lg lg:text-2xl font-normal text-white/90 tracking-tight mb-1 sm:mb-2 lg:mb-3">
                     {product.name}
                   </h3>
                   <p className="text-sm lg:text-base text-white/40 leading-relaxed font-light">
