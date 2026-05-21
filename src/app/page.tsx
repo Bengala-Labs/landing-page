@@ -159,7 +159,7 @@ export default function Home() {
   };
 
   return (
-    <main className="relative h-[100dvh] w-screen overflow-hidden bg-background text-foreground font-sans selection:bg-accent selection:text-white">
+    <main className="relative min-h-[100dvh] w-screen flex flex-col overflow-x-hidden bg-background text-foreground font-sans selection:bg-accent selection:text-white">
 
       {/* Dynamic Background Glow (Soft Warm Red) - Ambient effect that tracks coordinates in negative space */}
       <div
@@ -174,7 +174,7 @@ export default function Home() {
 
       {/* Noise Overlay */}
       <div
-        className="absolute inset-0 z-50 opacity-[0.05] mix-blend-overlay pointer-events-none"
+        className="fixed inset-0 z-50 opacity-[0.05] mix-blend-overlay pointer-events-none"
         style={{
           backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
         }}
@@ -212,7 +212,7 @@ export default function Home() {
       </nav>
 
       {/* Background Media */}
-      <div className="absolute inset-0 z-0 bg-background flex items-center justify-center pointer-events-none">
+      <div className="fixed inset-0 z-0 bg-background flex items-center justify-center pointer-events-none">
         <video
           ref={videoRef}
           className={`w-full h-full object-cover transition-all duration-[3000ms] ease-in-out scale-105 mix-blend-multiply ${
@@ -233,7 +233,7 @@ export default function Home() {
       <div className={`absolute bottom-1/4 right-16 w-[1px] h-48 bg-gradient-to-b from-border/0 via-border/60 to-border/0 transition-all duration-[3000ms] delay-[1200ms] ${isLoaded ? "opacity-100 scale-y-100" : "opacity-0 scale-y-0 origin-bottom"}`} />
 
       {/* Main Content */}
-      <div className="relative z-10 w-full h-full flex flex-col pt-24 pb-8 px-6 md:pt-36 md:pb-20 md:px-16">
+      <div className="relative z-10 w-full flex-1 flex flex-col pt-24 pb-8 px-6 md:pt-36 md:pb-20 md:px-16">
 
         <div className="mt-auto flex flex-col lg:flex-row lg:items-end justify-between w-full max-w-[1800px] mx-auto gap-12 lg:gap-24">
 
