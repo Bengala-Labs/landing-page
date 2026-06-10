@@ -1,12 +1,54 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, type ReactNode } from "react";
 import Image from "next/image";
+
+/* Scroll-triggered reveal wrapper (IntersectionObserver, fires once) */
+function Reveal({
+  children,
+  delay = 0,
+  className = "",
+}: {
+  children: ReactNode;
+  delay?: number;
+  className?: string;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [inView, setInView] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setInView(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.15, rootMargin: "0px 0px -40px 0px" }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div
+      ref={ref}
+      className={`transition-all duration-[1400ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"
+        } ${className}`}
+      style={{ transitionDelay: `${delay}ms` }}
+    >
+      {children}
+    </div>
+  );
+}
 
 export default function Home() {
   const [videoEnded, setVideoEnded] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
-  const [activeCard, setActiveCard] = useState<number | null>(null);
+  const [scrolled, setScrolled] = useState(false);
+  const [activeProduct, setActiveProduct] = useState<number | null>(null);
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const cursorRef = useRef<HTMLDivElement>(null);
@@ -43,7 +85,6 @@ export default function Home() {
       requestAnimationFrame(animate);
     };
 
-    // Start animation loop
     const animationId = requestAnimationFrame(animate);
 
     if (cursorRef.current) {
@@ -57,9 +98,14 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    // Slight delay for initial entrance animation smoothness
     const t = setTimeout(() => setIsLoaded(true), 150);
     return () => clearTimeout(t);
+  }, []);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 40);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   useEffect(() => {
@@ -76,92 +122,93 @@ export default function Home() {
     }
   }, []);
 
+  /*
+   * Copy estructurado con Jobs To Be Done:
+   * situation → la aspiración del comprador ("Imagina...")
+   * headline  → el progreso que el cliente quiere lograr
+   * outcome   → el resultado medible
+   */
   const products = [
     {
       id: 1,
       name: "Bengala Mercadeo",
-      description: "Agente conversacional autónomo para prospección y ventas en el sector financiero.",
       number: "01",
+      situation: "Imagina que tu equipo solo habla con clientes listos para comprar…",
+      headline: "Conversa con miles. Cierra con los correctos.",
+      body: "Automatiza la prospección, calificación y maduración de clientes del sector financiero, 24/7. Tus asesores reciben oportunidades listas para cerrar.",
+      outcome: "Pipeline lleno sin crecer el equipo.",
       tag: "Bancos / Finanzas",
-      meta: "Prospección & Ventas"
-    },
-    {
-      id: 2,
-      name: "Bengala Compras",
-      description: "Plataforma inteligente para la automatización de licitaciones y compras públicas.",
-      number: "02",
-      tag: "Gobierno / Estado",
-      meta: "Licitación Autónoma"
+      meta: "Prospección & Ventas",
     },
     {
       id: 3,
       name: "Bengala Workflows",
-      description: "Entorno visual intuitivo para orquestar flujos de trabajo y automatizaciones con IA.",
-      number: "03",
+      number: "02",
+      situation: "Imagina cada proceso fluyendo de principio a fin, todos los días…",
+      headline: "Dibuja el flujo. Se ejecuta solo.",
+      body: "Conecta tus sistemas en un lienzo visual y describe el proceso una vez. Se ejecuta completo, cada vez. Sin código.",
+      outcome: "Procesos que fluyen solos.",
       tag: "Negocios / No-Code",
-      meta: "Orquestación IA"
-    }
+      meta: "Automatización Visual",
+    },
   ];
 
-  // Awwwards-winning custom product logomarks.
-  // Each mark is a unique color-harmonized geometric layout styled exactly like the main Bengala mark
-  // forming abstract letters: M (Mercadeo), C (Compras), W (Workflows)
+  const method = [
+    {
+      number: "01",
+      title: "Entendemos el trabajo",
+      body: "Empezamos por tu proceso, no por la tecnología.",
+    },
+    {
+      number: "02",
+      title: "Activas la automatización",
+      body: "Con tus reglas y tus sistemas. Tú mantienes el control.",
+    },
+    {
+      number: "03",
+      title: "Mides el progreso",
+      body: "El éxito no es tener IA. Es trabajo terminado.",
+    },
+  ];
+
+  const marqueeJobs = [
+    "Prospección comercial",
+    "Calificación de leads",
+    "Seguimiento de clientes",
+    "Procesos repetitivos",
+    "Reportes operativos",
+    "Integración de sistemas",
+  ];
+
+  // Custom product logomarks: abstract geometric letters M / W,
+  // color-harmonized with the main Bengala mark (light ink for dark backgrounds)
   const renderProductMark = (id: number, isActive: boolean) => {
     if (id === 1) {
-      // Bengala Mercadeo: Geometric 'M' block in Crimson and Gold
       return (
-        <svg className="w-8 h-8 shrink-0 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]" viewBox="0 0 140 151" fill="none" xmlns="http://www.w3.org/2000/svg">
-          {/* Left Pillar */}
+        <svg className="w-10 h-10 lg:w-12 lg:h-12 shrink-0 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]" viewBox="0 0 140 151" fill="none" xmlns="http://www.w3.org/2000/svg">
           <rect x="0" y="30" width="35" height="121" fill="#EF3333" className={`transition-opacity duration-500 ${isActive ? "opacity-100" : "opacity-90"}`} />
-          {/* Left slant block */}
           <polygon points="35,30 70,65 70,105 35,70" fill="#FCB641" />
-          {/* Right slant block */}
-          <polygon points="105,30 70,65 70,105 105,70" fill="#0D1421" />
-          {/* Right Pillar */}
+          <polygon points="105,30 70,65 70,105 105,70" fill="#FAF9F6" />
           <rect x="105" y="30" width="35" height="121" fill="#EF3333" className={`transition-opacity duration-500 ${isActive ? "opacity-100" : "opacity-90"}`} />
-          {/* Bottom Center node */}
           <rect x="52.5" y="110" width="35" height="41" fill="#FCB641" />
         </svg>
       );
     }
-    if (id === 2) {
-      // Bengala Compras: Geometric 'C' block in Crimson and Slate Blue
-      return (
-        <svg className="w-8 h-8 shrink-0 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]" viewBox="0 0 140 151" fill="none" xmlns="http://www.w3.org/2000/svg">
-          {/* Top block */}
-          <rect x="0" y="0" width="140" height="35" fill="#EF3333" className={`transition-opacity duration-500 ${isActive ? "opacity-100" : "opacity-90"}`} />
-          {/* Left Pillar */}
-          <rect x="0" y="35" width="35" height="81" fill="#0D1421" />
-          {/* Bottom block */}
-          <rect x="0" y="116" width="140" height="35" fill="#EF3333" className={`transition-opacity duration-500 ${isActive ? "opacity-100" : "opacity-90"}`} />
-          {/* Inner right core block */}
-          <rect x="105" y="81" width="35" height="35" fill="#FCB641" />
-          {/* Inner top left core block */}
-          <polygon points="35,35 70,35 70,70 35,70" fill="#FCB641" />
-        </svg>
-      );
-    }
-    // Bengala Workflows: Geometric 'W' block in Crimson and Dark Ink
     return (
-      <svg className="w-8 h-8 shrink-0 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]" viewBox="0 0 140 151" fill="none" xmlns="http://www.w3.org/2000/svg">
-        {/* Left Pillar */}
+      <svg className="w-10 h-10 lg:w-12 lg:h-12 shrink-0 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]" viewBox="0 0 140 151" fill="none" xmlns="http://www.w3.org/2000/svg">
         <rect x="0" y="0" width="35" height="121" fill="#EF3333" className={`transition-opacity duration-500 ${isActive ? "opacity-100" : "opacity-90"}`} />
-        {/* Left slant slant */}
-        <polygon points="35,86 70,121 70,151 35,116" fill="#0D1421" />
-        {/* Right slant slant */}
+        <polygon points="35,86 70,121 70,151 35,116" fill="#FAF9F6" />
         <polygon points="105,86 70,121 70,151 105,116" fill="#FCB641" />
-        {/* Right Pillar */}
         <rect x="105" y="0" width="35" height="121" fill="#EF3333" className={`transition-opacity duration-500 ${isActive ? "opacity-100" : "opacity-90"}`} />
-        {/* Center top node */}
-        <rect x="52.5" y="30" width="35" height="55" fill="#0D1421" />
+        <rect x="52.5" y="30" width="35" height="55" fill="#FAF9F6" />
       </svg>
     );
   };
 
   return (
-    <main className="relative min-h-[100dvh] w-screen flex flex-col overflow-x-hidden bg-background text-foreground font-sans selection:bg-accent selection:text-white">
+    <main className="relative min-h-[100dvh] w-full flex flex-col overflow-x-hidden bg-background text-foreground font-sans selection:bg-accent selection:text-white">
 
-      {/* Dynamic Background Glow (Soft Warm Red) - Ambient effect that tracks coordinates in negative space */}
+      {/* Dynamic Background Glow (Soft Warm Red) */}
       <div
         ref={cursorRef}
         className="pointer-events-none fixed top-0 left-0 w-[800px] h-[800px] -mt-[400px] -ml-[400px] rounded-full mix-blend-multiply transition-opacity duration-[1500ms] ease-out z-30"
@@ -180,217 +227,375 @@ export default function Home() {
         }}
       />
 
-      {/* Editorial Vertical Gridlines */}
-      <div className={`absolute top-0 left-12 w-[1px] h-full bg-border/40 transition-all duration-[3000ms] delay-700 origin-top pointer-events-none z-20 ${isLoaded ? "scale-y-100" : "scale-y-0"}`} />
-      <div className={`absolute top-0 right-12 w-[1px] h-full bg-border/40 transition-all duration-[3000ms] delay-[900ms] origin-bottom pointer-events-none z-20 ${isLoaded ? "scale-y-100" : "scale-y-0"}`} />
-
-      {/* Navigation Layer */}
-      <nav className="absolute top-0 left-0 right-0 z-40">
-        <div className="w-full px-6 py-8 md:px-16 md:py-10 flex items-center justify-between">
+      {/* Navigation */}
+      <nav className={`fixed top-0 left-0 right-0 z-40 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${scrolled ? "bg-background/75 backdrop-blur-xl border-b border-border/60" : "bg-transparent border-b border-transparent"
+        }`}>
+        <div className={`w-full px-6 md:px-16 flex items-center justify-between transition-all duration-700 ${scrolled ? "py-4 md:py-5" : "py-8 md:py-10"}`}>
           <div className={`transition-all duration-[2000ms] delay-[400ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${isLoaded ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-8"}`}>
-            <Image
-              src="/logo.svg"
-              alt="Bengala AI | Ecosistema de Agentes de Inteligencia Artificial"
-              width={140}
-              height={32}
-              className="h-6 md:h-8 w-auto opacity-95 transition-opacity hover:opacity-100"
-              priority
-            />
+            <a href="#" aria-label="Bengala AI — inicio">
+              <Image
+                src="/logo.svg"
+                alt="Bengala AI | Automatización Inteligente de Procesos"
+                width={140}
+                height={32}
+                className="h-6 md:h-7 w-auto opacity-95 transition-opacity hover:opacity-100"
+                priority
+              />
+            </a>
           </div>
-          
-          {/* Ecosistema Label with Pulsing Agent Dot */}
-          <div className={`flex items-center gap-3 transition-all duration-[2000ms] delay-[600ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${isLoaded ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-8"}`}>
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-accent"></span>
-            </span>
-            <span className="text-[10px] md:text-xs tracking-[0.4em] font-mono uppercase text-foreground/50">
-              Ecosistema
-            </span>
+
+          <div className={`flex items-center gap-6 md:gap-10 transition-all duration-[2000ms] delay-[600ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${isLoaded ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-8"}`}>
+            <div className="hidden md:flex items-center gap-3">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-accent"></span>
+              </span>
+              <span className="text-[10px] md:text-xs tracking-[0.4em] font-mono uppercase text-foreground/50">
+                Ecosistema
+              </span>
+            </div>
+            <a
+              href="https://docs.google.com/forms/d/e/1FAIpQLSePtcG7HS9nhOXR2Ho0TzUJPwnOmUyIKkx4auAg3RhUZSdUwQ/viewform"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group relative text-xs md:text-sm font-medium tracking-wide text-foreground"
+            >
+              Hablemos
+              <span className="absolute -bottom-1 left-0 w-full h-[1px] bg-accent origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]" />
+              <span className="ml-1 text-accent inline-block transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-0.5 group-hover:-translate-y-0.5">↗</span>
+            </a>
           </div>
         </div>
       </nav>
 
-      {/* Background Media */}
-      <div className="fixed inset-0 z-0 bg-background flex items-center justify-center pointer-events-none">
-        <video
-          ref={videoRef}
-          className={`w-full h-full object-cover transition-all duration-[3000ms] ease-in-out scale-105 mix-blend-multiply ${
-            videoEnded ? "opacity-0 blur-sm scale-110" : "opacity-[0.07] blur-0 scale-105"
-          }`}
-          src="/Black_and_White_Flair_Video.mp4"
-          muted
-          playsInline
-          title="Fondo animativo abstracto y fluido de Bengala AI"
-          aria-hidden="true"
-        />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,var(--background)_90%)]" />
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/40 to-background" />
-      </div>
+      {/* ============ HERO ============ */}
+      <header className="relative min-h-[100dvh] w-full flex flex-col">
 
-      {/* Abstract Design Elements - Decorative Lines */}
-      <div className={`absolute top-1/4 left-16 w-[1px] h-32 bg-gradient-to-b from-border/0 via-border/60 to-border/0 transition-all duration-[3000ms] delay-1000 ${isLoaded ? "opacity-100 scale-y-100" : "opacity-0 scale-y-0 origin-top"}`} />
-      <div className={`absolute bottom-1/4 right-16 w-[1px] h-48 bg-gradient-to-b from-border/0 via-border/60 to-border/0 transition-all duration-[3000ms] delay-[1200ms] ${isLoaded ? "opacity-100 scale-y-100" : "opacity-0 scale-y-0 origin-bottom"}`} />
+        {/* Background Media */}
+        <div className="absolute inset-0 z-0 bg-background flex items-center justify-center pointer-events-none overflow-hidden">
+          <video
+            ref={videoRef}
+            className={`w-full h-full object-cover transition-all duration-[3000ms] ease-in-out scale-105 mix-blend-multiply ${videoEnded ? "opacity-0 blur-sm scale-110" : "opacity-[0.07] blur-0 scale-105"
+              }`}
+            src="/Black_and_White_Flair_Video.mp4"
+            muted
+            playsInline
+            title="Fondo animado abstracto y fluido de Bengala AI"
+            aria-hidden="true"
+          />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,var(--background)_90%)]" />
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/40 to-background" />
+        </div>
 
-      {/* Main Content */}
-      <div className="relative z-10 w-full flex-1 flex flex-col pt-24 pb-8 px-6 md:pt-36 md:pb-20 md:px-16">
+        {/* Editorial Vertical Gridlines */}
+        <div className={`absolute top-0 left-6 md:left-12 w-[1px] h-full bg-border/40 transition-all duration-[3000ms] delay-700 origin-top pointer-events-none z-20 ${isLoaded ? "scale-y-100" : "scale-y-0"}`} />
+        <div className={`absolute top-0 right-6 md:right-12 w-[1px] h-full bg-border/40 transition-all duration-[3000ms] delay-[900ms] origin-bottom pointer-events-none z-20 ${isLoaded ? "scale-y-100" : "scale-y-0"}`} />
 
-        <div className="mt-auto flex flex-col lg:flex-row lg:items-end justify-between w-full max-w-[1800px] mx-auto gap-12 lg:gap-24">
+        {/* Decorative Lines */}
+        <div className={`absolute top-1/4 left-16 w-[1px] h-32 bg-gradient-to-b from-border/0 via-border/60 to-border/0 transition-all duration-[3000ms] delay-1000 ${isLoaded ? "opacity-100 scale-y-100" : "opacity-0 scale-y-0 origin-top"}`} />
+        <div className={`absolute bottom-1/4 right-16 w-[1px] h-48 bg-gradient-to-b from-border/0 via-border/60 to-border/0 transition-all duration-[3000ms] delay-[1200ms] ${isLoaded ? "opacity-100 scale-y-100" : "opacity-0 scale-y-0 origin-bottom"}`} />
 
-          {/* Typography Section */}
-          <div className={`flex-1 transition-all duration-[2000ms] delay-[800ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${isLoaded ? "translate-y-0 opacity-100" : "translate-y-24 opacity-0"}`}>
-            <h1 className="text-[2.75rem] leading-[1.1] sm:text-[3.5rem] sm:leading-[1.05] md:text-[5rem] lg:text-[7rem] lg:leading-[0.95] tracking-[-0.03em] font-sans text-foreground">
-              <span className="block overflow-hidden pb-1 lg:pb-3">
-                <span className={`block font-medium transition-transform duration-[2000ms] delay-[900ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${isLoaded ? "translate-y-0" : "translate-y-[120%]"}`}>
-                  Evolucionando
-                </span>
-              </span>
-              <span className="block overflow-hidden pb-1 lg:pb-3">
-                <span className={`block text-foreground/50 italic font-light pr-4 transition-transform duration-[2000ms] delay-[1000ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${isLoaded ? "translate-y-0" : "translate-y-[120%]"}`}>
-                  operaciones con
-                </span>
-              </span>
-              <span className="block overflow-hidden pb-2 lg:pb-4">
-                <span className={`block font-extrabold transition-transform duration-[2000ms] delay-[1100ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${isLoaded ? "translate-y-0" : "translate-y-[120%]"}`}>
-                  agentes IA<span className="text-accent font-sans">.</span>
-                </span>
-              </span>
-            </h1>
+        <div className="relative z-10 flex-1 flex flex-col justify-end w-full max-w-[1800px] mx-auto px-6 md:px-16 pt-32 pb-16 md:pb-24">
 
-            {/* Contact Info with Premium Hover Underline */}
-            <div className={`mt-8 sm:mt-12 lg:mt-20 transition-all duration-[2000ms] delay-[1500ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${isLoaded ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"}`}>
-              <p className="text-sm lg:text-base font-light text-foreground/45 tracking-wider">
-                Escríbenos al{" "}
-                <a
-                  href="mailto:hola@bengala.ai"
-                  className="relative inline-flex items-center gap-1 text-foreground font-medium group transition-colors duration-300"
-                >
-                  <span className="relative">
-                    hola@bengala.ai
-                    <span className="absolute bottom-0 left-0 w-full h-[1px] bg-accent origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]" />
-                  </span>
-                  <span className="inline-block transform transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-1 group-hover:-translate-y-1 text-accent font-sans">
-                    ↗
-                  </span>
-                </a>
-              </p>
-            </div>
+          <div className={`mb-8 md:mb-12 transition-all duration-[2000ms] delay-[700ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
+            <span className="text-[10px] md:text-xs tracking-[0.4em] font-mono uppercase text-accent">
+              Automatización inteligente
+            </span>
           </div>
 
-          {/* Awwwards-winning Product Component */}
-          <section aria-labelledby="products-heading" className="flex flex-col gap-4 lg:gap-6 lg:w-[500px] shrink-0 pb-4">
-            <h2 id="products-heading" className="sr-only">
-              Nuestros Productos de Inteligencia Artificial
-            </h2>
-            {products.map((product, index) => (
-              <article
-                key={product.id}
-                onMouseEnter={() => {
-                  setActiveCard(product.id);
-                }}
-                onMouseLeave={() => {
-                  setActiveCard(null);
-                }}
-                className={`relative flex items-start gap-4 sm:gap-6 border-t pt-6 sm:pt-7 transition-all duration-[800ms] ease-[cubic-bezier(0.16,1,0.3,1)] px-5 py-6 rounded-lg cursor-pointer ${
-                  activeCard === null
-                    ? "opacity-100 border-t-border/80"
-                    : activeCard === product.id
-                    ? "opacity-100 border-t-accent/40 shadow-[0_20px_40px_rgba(239,51,51,0.015)] translate-x-2"
-                    : "opacity-60 border-t-border/30"
-                }`}
-                style={{
-                  // Clear delay after initial load to make hover effect triggers instant
-                  transitionDelay: isLoaded ? "0ms" : `${1300 + (index * 150)}ms`,
-                  opacity: isLoaded ? undefined : 0,
-                  transform: isLoaded ? undefined : 'translateY(30px)',
-                  background: activeCard === product.id
-                    ? "linear-gradient(135deg, rgba(239,51,51,0.02) 0%, rgba(252,182,65,0.005) 100%)"
-                    : undefined
-                }}
-              >
-                {/* Micro-line active sweep top border */}
-                <div className={`absolute top-0 left-0 h-[2px] bg-accent transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
-                  activeCard === product.id ? "w-full opacity-100" : "w-0 opacity-0"
-                }`} />
+          <h1 className="text-[3rem] leading-[1.05] sm:text-[4rem] md:text-[5.5rem] lg:text-[7.5rem] lg:leading-[0.95] tracking-[-0.03em] font-sans text-foreground max-w-[18ch]">
+            <span className="block overflow-hidden pb-1 lg:pb-3">
+              <span className={`block font-medium transition-transform duration-[2000ms] delay-[900ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${isLoaded ? "translate-y-0" : "translate-y-[120%]"}`}>
+                La certeza
+              </span>
+            </span>
+            <span className="block overflow-hidden pb-1 lg:pb-3">
+              <span className={`block text-foreground/50 italic font-light pr-4 transition-transform duration-[2000ms] delay-[1000ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${isLoaded ? "translate-y-0" : "translate-y-[120%]"}`}>
+                de que el trabajo
+              </span>
+            </span>
+            <span className="block overflow-hidden pb-2 lg:pb-4">
+              <span className={`block font-extrabold transition-transform duration-[2000ms] delay-[1100ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${isLoaded ? "translate-y-0" : "translate-y-[120%]"}`}>
+                está hecho<span className="text-accent font-sans">.</span>
+              </span>
+            </span>
+          </h1>
 
-                {/* Left Column: Product index number */}
-                <div className="flex flex-col items-center shrink-0 pt-1">
-                  <div className={`text-[10px] font-mono tracking-wider tabular-nums transition-colors duration-500 ${
-                    activeCard === product.id ? "text-accent font-semibold animate-pulse" : "text-foreground/35"
-                  }`}>
-                    {product.number}
+          <div className={`mt-8 md:mt-12 flex flex-col md:flex-row md:items-end justify-between gap-10 transition-all duration-[2000ms] delay-[1400ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${isLoaded ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"}`}>
+            <p className="max-w-md text-base md:text-lg font-light text-foreground/55 leading-relaxed">
+              Mientras tú decides lo que sigue, tus procesos corren solos,
+              de principio a fin.
+            </p>
+
+            <div className="flex items-center gap-8 shrink-0">
+              <a
+                href="https://docs.google.com/forms/d/e/1FAIpQLSePtcG7HS9nhOXR2Ho0TzUJPwnOmUyIKkx4auAg3RhUZSdUwQ/viewform"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group relative inline-flex items-center gap-2 text-sm md:text-base font-medium text-white bg-foreground px-7 py-4 rounded-full overflow-hidden transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:scale-[1.03]"
+              >
+                <span className="absolute inset-0 bg-accent translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]" />
+                <span className="relative">Automatiza tu primer proceso</span>
+                <span className="relative inline-block transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-1 group-hover:-translate-y-1">↗</span>
+              </a>
+              <a
+                href="#automatizaciones"
+                className="group hidden sm:inline-flex items-center gap-2 text-sm font-light text-foreground/50 hover:text-foreground transition-colors duration-300"
+              >
+                Descubre las automatizaciones
+                <span className="inline-block transition-transform duration-500 group-hover:translate-y-1">↓</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* ============ MARQUEE (dark): los procesos que automatizas ============ */}
+      <section aria-label="Procesos que Bengala automatiza por ti" className="relative z-10 py-5 md:py-6 overflow-hidden bg-foreground text-background">
+        <div className="flex w-max animate-marquee" aria-hidden="true">
+          {[0, 1].map((copy) => (
+            <div key={copy} className="flex shrink-0 items-center">
+              {marqueeJobs.map((job) => (
+                <span key={`${copy}-${job}`} className="flex items-center text-xs md:text-sm font-mono uppercase tracking-[0.3em] text-background/50 whitespace-nowrap">
+                  <span className="px-6 md:px-10">{job}</span>
+                  <span className="text-accent">·</span>
+                </span>
+              ))}
+            </div>
+          ))}
+        </div>
+        <p className="sr-only">{marqueeJobs.join(", ")}</p>
+      </section>
+
+      {/* ============ MANIFIESTO ============ */}
+      <section className="relative z-10 w-full max-w-[1800px] mx-auto px-6 md:px-16 py-28 md:py-44">
+        <Reveal>
+          <span className="block text-[10px] md:text-xs tracking-[0.4em] font-mono uppercase text-foreground/40 mb-10 md:mb-14">
+            Por qué existimos
+          </span>
+        </Reveal>
+        <Reveal delay={100}>
+          <p className="max-w-5xl text-3xl sm:text-4xl md:text-6xl leading-snug md:leading-tight tracking-tight font-light text-foreground/85">
+            <span className="font-semibold text-foreground">
+              Tu equipo fue contratado para pensar.
+            </span>{" "}
+            <span className="italic text-foreground/50">
+              Lo demás corre en automático.
+            </span>
+          </p>
+        </Reveal>
+      </section>
+
+      {/* ============ AUTOMATIZACIONES / PRODUCTOS (dark) ============ */}
+      <section id="automatizaciones" aria-labelledby="products-heading" className="relative z-10 bg-foreground text-background">
+        <div className="w-full max-w-[1800px] mx-auto px-6 md:px-16 py-28 md:py-40">
+          <Reveal>
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-background/15 pb-10 md:pb-14 mb-4">
+              <div>
+                <h2 id="products-heading" className="text-4xl sm:text-5xl md:text-7xl tracking-tight font-medium">
+                  Un proceso. Una automatización. Hecho<span className="text-accent">.</span>
+                </h2>
+              </div>
+            </div>
+          </Reveal>
+
+          <div className="flex flex-col">
+            {products.map((product, index) => (
+              <Reveal key={product.id} delay={index * 100}>
+                <article
+                  onMouseEnter={() => setActiveProduct(product.id)}
+                  onMouseLeave={() => setActiveProduct(null)}
+                  className={`group relative grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-12 border-b border-background/15 py-12 md:py-16 px-4 md:px-6 -mx-4 md:-mx-6 rounded-lg transition-all duration-[800ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${activeProduct !== null && activeProduct !== product.id ? "opacity-50" : "opacity-100"
+                    }`}
+                  style={{
+                    background:
+                      activeProduct === product.id
+                        ? "linear-gradient(135deg, rgba(239,51,51,0.08) 0%, rgba(252,182,65,0.02) 100%)"
+                        : undefined,
+                  }}
+                >
+                  {/* Active sweep top border */}
+                  <div className={`absolute top-0 left-0 h-[2px] bg-accent transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${activeProduct === product.id ? "w-full opacity-100" : "w-0 opacity-0"
+                    }`} />
+
+                  {/* Col 1: number + situation (la aspiración del comprador) */}
+                  <div className="lg:col-span-5 flex flex-col gap-6">
+                    <span className={`text-xs font-mono tracking-wider tabular-nums transition-colors duration-500 ${activeProduct === product.id ? "text-accent-gold font-semibold" : "text-background/35"
+                      }`}>
+                      {product.number}
+                    </span>
+                    <p className="text-lg md:text-2xl italic font-light text-background/45 leading-snug max-w-md">
+                      {product.situation}
+                    </p>
                   </div>
-                </div>
-                
-                {/* Card Text Content */}
-                <div className="flex flex-col flex-1">
-                  
-                  {/* Brand Combined Logo: Mark + Product Name (styled exactly like logo.svg) */}
-                  <div className="flex items-center gap-3 mb-2.5">
-                    {renderProductMark(product.id, activeCard === product.id)}
-                    <div className="flex items-baseline gap-1.5 justify-between w-full">
-                      <h3 className="text-base sm:text-lg lg:text-xl tracking-tight transition-all duration-500">
-                        <span className="font-semibold text-foreground">Bengala</span>{" "}
-                        <span className={`font-normal transition-colors duration-500 ${
-                          activeCard === product.id ? "text-accent" : "text-foreground/70"
-                        }`}>
+
+                  {/* Col 2: la automatización y el progreso que entrega */}
+                  <div className="lg:col-span-7 flex flex-col">
+                    <div className="flex items-center gap-4 mb-6">
+                      <div className={`transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${activeProduct === product.id ? "rotate-[-6deg] scale-110" : ""}`}>
+                        {renderProductMark(product.id, activeProduct === product.id)}
+                      </div>
+                      <h3 className="text-lg md:text-xl tracking-tight">
+                        <span className="font-semibold text-background">Bengala</span>{" "}
+                        <span className={`font-normal transition-colors duration-500 ${activeProduct === product.id ? "text-accent-gold" : "text-background/70"
+                          }`}>
                           {product.name.split(" ")[1]}
                         </span>
                       </h3>
-                      
-                      {/* Subtle micro-arrow indicator */}
-                      <span className={`text-accent text-sm transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] transform ${
-                        activeCard === product.id ? "translate-x-0 opacity-100" : "-translate-x-2 opacity-0"
-                      }`}>
+                      <span className={`text-accent-gold text-base transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${activeProduct === product.id ? "translate-x-0 opacity-100" : "-translate-x-2 opacity-0"
+                        }`}>
                         →
                       </span>
                     </div>
+
+                    <p className="text-2xl md:text-4xl font-medium tracking-tight leading-tight max-w-2xl mb-5">
+                      {product.headline}
+                    </p>
+
+                    <p className="text-sm md:text-base text-background/55 leading-relaxed font-light max-w-2xl mb-6">
+                      {product.body}
+                    </p>
+
+                    <p className="text-sm md:text-base font-medium text-background mb-7">
+                      <span className="text-accent mr-2">—</span>
+                      {product.outcome}
+                    </p>
+
+                    <div className="flex gap-2 flex-wrap">
+                      <span className={`px-2.5 py-1 text-[9px] md:text-[10px] font-mono tracking-wider rounded border transition-all duration-500 uppercase ${activeProduct === product.id
+                        ? "bg-accent/15 border-accent/30 text-accent-light font-medium"
+                        : "bg-background/5 border-background/15 text-background/40"
+                        }`}>
+                        {product.tag}
+                      </span>
+                      <span className={`px-2.5 py-1 text-[9px] md:text-[10px] font-mono tracking-wider rounded border transition-all duration-500 uppercase ${activeProduct === product.id
+                        ? "bg-accent-gold/15 border-accent-gold/25 text-accent-gold font-medium"
+                        : "bg-background/5 border-background/15 text-background/40"
+                        }`}>
+                        {product.meta}
+                      </span>
+                    </div>
                   </div>
-                  
-                  <p className="text-sm lg:text-[14.5px] text-foreground/50 leading-relaxed font-light transition-colors duration-500">
-                    {product.description}
-                  </p>
-                  
+
                   {product.id === 1 && (
                     <p className="sr-only">
                       Bengala Mercadeo utiliza Modelos de Lenguaje de Gran Escala (LLM), procesamiento de lenguaje natural (NLP) y pipelines de datos altamente seguros para automatizar flujos de adquisición de clientes y prospección de ventas, garantizando conformidad normativa bancaria y conversión financiera óptima.
                     </p>
                   )}
-                  {product.id === 2 && (
-                    <p className="sr-only">
-                      Bengala Compras integra agentes de inteligencia artificial y automatización robótica (RPA) capaces de analizar pliegos de condiciones técnicas de contratación pública, optimizando la preparación y presentación de ofertas licitatorias para contratos del Estado.
-                    </p>
-                  )}
                   {product.id === 3 && (
                     <p className="sr-only">
-                      Bengala Workflows permite la creación de integraciones complejas sin código (No-Code AI Workflows), conectando APIs empresariales, bases de datos y agentes autónomos cognitivos mediante una interfaz interactiva de orquestación visual.
+                      Bengala Workflows permite la creación de integraciones complejas sin código (No-Code AI Workflows), conectando APIs empresariales, bases de datos y servicios de inteligencia artificial mediante una interfaz interactiva de automatización visual.
                     </p>
                   )}
-
-                  {/* High-end Technical metadata pill tags */}
-                  <div className="flex gap-2 mt-4 flex-wrap">
-                    <span className={`px-2 py-0.5 text-[9px] font-mono tracking-wider rounded border transition-all duration-500 uppercase ${
-                      activeCard === product.id 
-                        ? "bg-accent/10 border-accent/20 text-accent font-medium" 
-                        : "bg-foreground/5 border-foreground/10 text-foreground/40"
-                    }`}>
-                      {product.tag}
-                    </span>
-                    <span className={`px-2 py-0.5 text-[9px] font-mono tracking-wider rounded border transition-all duration-500 uppercase ${
-                      activeCard === product.id 
-                        ? "bg-accent-gold/15 border-accent-gold/25 text-accent-gold font-medium" 
-                        : "bg-foreground/5 border-foreground/10 text-foreground/40"
-                    }`}>
-                      {product.meta}
-                    </span>
-                  </div>
-                </div>
-              </article>
+                </article>
+              </Reveal>
             ))}
-          </section>
-
+          </div>
         </div>
-      </div>
+      </section>
+
+      {/* ============ MÉTODO ============ */}
+      <section id="metodo" aria-labelledby="method-heading" className="relative z-10">
+        <div className="w-full max-w-[1800px] mx-auto px-6 md:px-16 py-28 md:py-40">
+          <Reveal>
+            <span className="block text-[10px] md:text-xs tracking-[0.4em] font-mono uppercase text-accent mb-6">
+              Cómo trabajamos
+            </span>
+            <h2 id="method-heading" className="text-3xl sm:text-4xl md:text-6xl tracking-tight font-medium max-w-[18ch] mb-16 md:mb-24">
+              Tan simple como encender un interruptor<span className="text-accent">.</span>
+            </h2>
+          </Reveal>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-10">
+            {method.map((step, index) => (
+              <Reveal key={step.number} delay={index * 150}>
+                <div className="flex flex-col gap-5 border-t border-border pt-8 h-full">
+                  <span className="text-xs font-mono tracking-wider text-accent tabular-nums">
+                    {step.number}
+                  </span>
+                  <h3 className="text-xl md:text-2xl font-medium tracking-tight">
+                    {step.title}
+                  </h3>
+                  <p className="text-sm md:text-base font-light text-foreground/55 leading-relaxed">
+                    {step.body}
+                  </p>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ============ CTA FINAL ============ */}
+      <section id="contacto" aria-labelledby="contact-heading" className="relative z-10 w-full max-w-[1800px] mx-auto px-6 md:px-16 py-32 md:py-48 text-center">
+        <Reveal>
+          <span className="block text-[10px] md:text-xs tracking-[0.4em] font-mono uppercase text-accent mb-10">
+            Empieza hoy
+          </span>
+        </Reveal>
+        <Reveal delay={100}>
+          <h2 id="contact-heading" className="text-[2.5rem] leading-[1.05] sm:text-6xl md:text-8xl tracking-[-0.03em] font-medium max-w-[16ch] mx-auto">
+            ¿Qué proceso automatizas{" "}
+            <span className="italic font-light text-foreground/50">primero</span>
+            <span className="text-accent">?</span>
+          </h2>
+        </Reveal>
+        <Reveal delay={250}>
+          <p className="mt-10 text-base md:text-lg font-light text-foreground/50 max-w-md mx-auto leading-relaxed">
+            Cuéntanoslo. Te responden personas, no bots.
+          </p>
+        </Reveal>
+        <Reveal delay={400}>
+          <a
+            href="https://docs.google.com/forms/d/e/1FAIpQLSePtcG7HS9nhOXR2Ho0TzUJPwnOmUyIKkx4auAg3RhUZSdUwQ/viewform"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group relative inline-flex items-center gap-3 mt-12 text-2xl sm:text-3xl md:text-5xl font-medium tracking-tight text-foreground"
+          >
+            <span className="relative">
+              hola@bengala.ai
+              <span className="absolute -bottom-1 md:-bottom-2 left-0 w-full h-[2px] bg-accent origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]" />
+            </span>
+            <span className="inline-block transform transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-2 group-hover:-translate-y-2 text-accent">
+              ↗
+            </span>
+          </a>
+        </Reveal>
+      </section>
+
+      {/* ============ FOOTER ============ */}
+      <footer className="relative z-10 border-t border-border/60">
+        <div className="w-full max-w-[1800px] mx-auto px-6 md:px-16 py-10 flex flex-col md:flex-row items-center justify-between gap-6">
+          <Image
+            src="/logo.svg"
+            alt="Bengala AI"
+            width={110}
+            height={26}
+            className="h-5 w-auto opacity-80"
+          />
+          <div className="flex flex-col md:flex-row items-center gap-4 md:gap-8">
+            <p className="text-xs font-light text-foreground/40 tracking-wide text-center">
+              © {new Date().getFullYear()} Bengala AI — Automatización que hace el trabajo.
+            </p>
+            <div className="flex items-center gap-6 text-xs font-light text-foreground/40">
+              <a href="/politica-de-privacidad" className="hover:text-accent transition-colors">
+                Política de Privacidad
+              </a>
+              <a href="/terminos-y-condiciones" className="hover:text-accent transition-colors">
+                Términos y Condiciones
+              </a>
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            <span className="relative flex h-1.5 w-1.5">
+              <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-accent"></span>
+            </span>
+            <span className="text-[10px] tracking-[0.3em] font-mono uppercase text-foreground/40">
+              Ecosistema activo
+            </span>
+          </div>
+        </div>
+      </footer>
 
       {/* Dynamic SEO JSON-LD Structured Data Schema */}
       <script
@@ -406,16 +611,15 @@ export default function Home() {
                 "url": "https://bengala.ai",
                 "logo": "https://bengala.ai/logo.svg",
                 "image": "https://bengala.ai/og-image.jpg",
-                "description": "Evolucionando operaciones empresariales y estatales con agentes autónomos de Inteligencia Artificial.",
+                "description": "Automatización inteligente que toma la prospección y los procesos repetitivos de tu operación — y los termina.",
                 "email": "hola@bengala.ai",
                 "knowsAbout": [
                   "Artificial Intelligence",
-                  "Autonomous AI Agents",
                   "Workflow Automation",
+                  "Business Process Automation",
                   "Fintech Automation",
-                  "Public Procurement Automation",
                   "Natural Language Processing",
-                  "Multi-Agent Orchestration"
+                  "No-Code Automation"
                 ],
                 "sameAs": [
                   "https://twitter.com/bengala_ai",
@@ -423,7 +627,7 @@ export default function Home() {
                 ],
                 "hasOfferCatalog": {
                   "@type": "OfferCatalog",
-                  "name": "Servicios de Automatización Cognitiva",
+                  "name": "Servicios de Automatización Inteligente",
                   "itemListElement": [
                     {
                       "@type": "Offer",
@@ -432,26 +636,7 @@ export default function Home() {
                         "name": "Bengala Mercadeo",
                         "applicationCategory": "BusinessApplication",
                         "operatingSystem": "All",
-                        "description": "Agente conversacional autónomo para prospección y ventas en el sector financiero.",
-                        "brand": {
-                          "@type": "Brand",
-                          "name": "Bengala AI"
-                        },
-                        "offers": {
-                          "@type": "Offer",
-                          "price": "Contact for pricing",
-                          "priceCurrency": "EUR"
-                        }
-                      }
-                    },
-                    {
-                      "@type": "Offer",
-                      "itemOffered": {
-                        "@type": "SoftwareApplication",
-                        "name": "Bengala Compras",
-                        "applicationCategory": "BusinessApplication",
-                        "operatingSystem": "All",
-                        "description": "Plataforma inteligente para la automatización de licitaciones y compras públicas.",
+                        "description": "Automatización conversacional que prospecta, califica y madura clientes del sector financiero las 24 horas.",
                         "brand": {
                           "@type": "Brand",
                           "name": "Bengala AI"
@@ -470,7 +655,7 @@ export default function Home() {
                         "name": "Bengala Workflows",
                         "applicationCategory": "BusinessApplication",
                         "operatingSystem": "All",
-                        "description": "Entorno visual intuitivo para orquestar flujos de trabajo y automatizaciones con IA.",
+                        "description": "Lienzo visual no-code donde describes un proceso una vez y se ejecuta completo, cada vez.",
                         "brand": {
                           "@type": "Brand",
                           "name": "Bengala AI"
@@ -490,7 +675,7 @@ export default function Home() {
                 "@id": "https://bengala.ai/#website",
                 "url": "https://bengala.ai",
                 "name": "Bengala AI",
-                "description": "Ecosistema de Agentes de Inteligencia Artificial",
+                "description": "Plataforma de Automatización Inteligente",
                 "publisher": {
                   "@id": "https://bengala.ai/#organization"
                 }

@@ -4,9 +4,9 @@ export const dynamic = "force-static";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Bengala AI - Ecosistema de Agentes de Inteligencia Artificial",
+    name: "Bengala AI - Automatización Inteligente de Procesos",
     short_name: "Bengala AI",
-    description: "Evolucionando operaciones con agentes IA hiper-especializados para finanzas, gobierno y negocios.",
+    description: "Automatización inteligente de procesos para finanzas, gobierno y negocios.",
     start_url: "/",
     display: "standalone",
     background_color: "#FAF9F6",
