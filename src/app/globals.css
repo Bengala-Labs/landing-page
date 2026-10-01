@@ -22,6 +22,7 @@
   --color-border: var(--border);
   --font-display: var(--font-display);
   --font-sans: var(--font-sans);
+  --font-mono: var(--font-jetbrains), ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
 * {
@@ -30,6 +31,11 @@
 
 html {
   scroll-behavior: smooth;
+}
+
+section[id],
+article[id] {
+  scroll-margin-top: 88px;
 }
 
 body {
@@ -203,6 +209,67 @@ button {
 .animate-marquee {
   animation: marquee 40s linear infinite;
   will-change: transform;
+}
+
+/* Hero entrance animations (CSS-only so the page can render on the server) */
+@keyframes rise {
+  from {
+    transform: translateY(115%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes fade-down {
+  from {
+    opacity: 0;
+    transform: translateY(-16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes grow-y {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
+.animate-rise {
+  animation: rise 1.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.animate-fade-up {
+  animation: fade-up 1.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.animate-fade-down {
+  animation: fade-down 1.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.animate-fade-in-slow {
+  animation: fadeIn 2.6s ease-out both;
+}
+
+.animate-grow-y {
+  animation: grow-y 2.6s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 /* Respect users who prefer reduced motion */

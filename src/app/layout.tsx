@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Host_Grotesk } from "next/font/google";
+import { Host_Grotesk, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
 const hostGrotesk = Host_Grotesk({
@@ -14,31 +14,38 @@ const hostGroteskDisplay = Host_Grotesk({
   weight: ["500", "600", "700", "800"],
 });
 
+const jetbrainsMono = JetBrains_Mono({
+  variable: "--font-jetbrains",
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+});
+
 export const metadata: Metadata = {
   metadataBase: new URL("https://bengala.ai"),
   title: {
-    default: "Bengala AI | Automatización que hace el trabajo",
+    default: "Bengala AI | Productos de IA que terminan el trabajo",
     template: "%s | Bengala AI"
   },
-  description: "Automatización inteligente que toma la prospección y los procesos repetitivos de tu operación — y los termina. Conoce Bengala Mercadeo y Bengala Workflows.",
+  description: "Bengala crea productos de inteligencia artificial que llevan cada tarea de principio a fin, con verificación y control humano.",
   keywords: [
     "Bengala AI",
+    "Bengala Labs",
+    "Productos de inteligencia artificial",
+    "Empresa de inteligencia artificial",
+    "Agentes de IA",
+    "Seguridad de la IA",
     "Automatización de procesos",
     "Inteligencia Artificial",
     "Automatización de flujos de trabajo",
-    "Prospección de ventas financiera",
-    "No-Code AI Workflows",
     "Inteligencia Artificial España",
     "Workflow Automation",
-    "Automatización empresarial",
-    "Automatización bancaria",
-    "Automatización no-code IA"
+    "Automatización empresarial"
   ],
   authors: [{ name: "Bengala AI", url: "https://bengala.ai" }],
   creator: "Bengala AI",
   publisher: "Bengala AI",
   category: "technology",
-  classification: "Artificial Intelligence & Automation Services",
+  classification: "Artificial Intelligence Products",
   alternates: {
     canonical: "https://bengala.ai",
     languages: {
@@ -54,21 +61,21 @@ export const metadata: Metadata = {
     alternateLocale: ["es_MX", "es_CO", "es_AR", "en_US"],
     url: "https://bengala.ai",
     siteName: "Bengala AI",
-    title: "Bengala AI | Automatización que hace el trabajo",
-    description: "Automatización inteligente que toma la prospección y los procesos repetitivos de tu operación — y los termina. Conoce Bengala Mercadeo y Bengala Workflows.",
+    title: "Bengala AI | Productos de IA que terminan el trabajo",
+    description: "Bengala crea productos de inteligencia artificial que llevan cada tarea de principio a fin, con verificación y control humano.",
     images: [
       {
         url: "/og-image.jpg",
         width: 1200,
         height: 630,
-        alt: "Bengala AI - Automatización Inteligente de Procesos",
+        alt: "Bengala AI - Productos de inteligencia artificial",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Bengala AI | Automatización que hace el trabajo",
-    description: "Automatización inteligente que toma la prospección y los procesos repetitivos de tu operación — y los termina.",
+    title: "Bengala AI | Productos de IA que terminan el trabajo",
+    description: "Productos de inteligencia artificial que terminan el trabajo.",
     images: ["/og-image.jpg"],
     creator: "@bengala_ai",
   },
@@ -109,7 +116,7 @@ export default function RootLayout({
   return (
     <html lang="es">
       <body
-        className={`${hostGrotesk.variable} ${hostGroteskDisplay.variable} antialiased`}
+        className={`${hostGrotesk.variable} ${hostGroteskDisplay.variable} ${jetbrainsMono.variable} antialiased`}
       >
         {children}
       </body>
