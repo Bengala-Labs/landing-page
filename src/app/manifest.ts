@@ -9,7 +9,7 @@ export default function manifest(): MetadataRoute.Manifest {
     description: "Elimina el ruido de fondo y suaviza tu acento en inglés, en tiempo real.",
     start_url: "/",
     display: "standalone",
-    background_color: "#0B0E14",
+    background_color: "#FAF9F6",
     theme_color: "#EF3333",
     icons: [
       {

@@ -3,6 +3,7 @@ import Nav from "./_components/Nav";
 import Reveal from "./_components/Reveal";
 import BlockField from "./_components/BlockField";
 import VoiceStream from "./_components/VoiceStream";
+import HeroField from "./_components/HeroField";
 import ScrollWords from "./_components/ScrollWords";
 import CallDemo from "./_components/CallDemo";
 import AccessModal from "./_components/AccessModal";
@@ -77,23 +78,19 @@ export default function Home() {
       <Nav />
 
       {/* ============ HERO ============ */}
-      <header className="relative min-h-[100dvh] w-full flex flex-col bg-foreground text-background overflow-hidden">
-        <div
-          className="absolute inset-0 pointer-events-none animate-fade-in-slow"
-          style={{
-            background:
-              "radial-gradient(ellipse 60% 45% at 50% 62%, rgba(239,51,51,0.16), transparent 70%), radial-gradient(ellipse 40% 30% at 70% 70%, rgba(252,182,65,0.07), transparent 70%)",
-          }}
-        />
+      <header className="relative min-h-[100dvh] w-full flex flex-col bg-background text-foreground overflow-hidden">
+        <div className="absolute inset-0 z-0 animate-fade-in-slow" style={{ animationDelay: "300ms" }}>
+          <HeroField />
+        </div>
 
         <div className="relative z-10 flex-1 flex flex-col items-center justify-end text-center w-full max-w-[1800px] mx-auto px-6 md:px-16 pt-28 md:pt-32">
-          <div className="animate-fade-up inline-flex items-center gap-3 rounded-full border border-background/15 bg-background/[0.04] pl-3 pr-4 py-1.5" style={{ animationDelay: "500ms" }}>
-            <KlearlyMark className="w-4 h-4 text-background" />
-            <span className="text-xs md:text-sm text-background/80">
-              Bengala <span className="font-semibold text-background">Klearly</span>
+          <div className="animate-fade-up inline-flex items-center gap-3 rounded-full border border-foreground/15 bg-foreground/[0.04] pl-3 pr-4 py-1.5" style={{ animationDelay: "500ms" }}>
+            <KlearlyMark className="w-4 h-4 text-foreground" />
+            <span className="text-xs md:text-sm text-foreground/80">
+              Bengala <span className="font-semibold text-foreground">Klearly</span>
             </span>
-            <span className="h-3 w-px bg-background/20" />
-            <span className="flex items-center gap-2 text-[10px] md:text-[11px] font-mono uppercase tracking-[0.2em] text-accent-gold">
+            <span className="h-3 w-px bg-foreground/20" />
+            <span className="flex items-center gap-2 text-[10px] md:text-[11px] font-mono uppercase tracking-[0.2em] text-accent">
               <span className="relative flex h-1.5 w-1.5">
                 <span className="absolute inline-flex h-full w-full rounded-full bg-accent-gold opacity-75 animate-ping" />
                 <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-accent-gold" />
@@ -102,20 +99,20 @@ export default function Home() {
             </span>
           </div>
 
-          <h1 className="mt-7 md:mt-8 text-[2.7rem] leading-[1] sm:text-6xl md:text-[5rem] lg:text-[6.25rem] lg:leading-[0.95] tracking-[-0.04em]">
+          <h1 className="hero-halo mt-7 md:mt-8 text-[2.7rem] leading-[1] sm:text-6xl md:text-[5rem] lg:text-[6.25rem] lg:leading-[0.95] tracking-[-0.04em]">
             <span className="block overflow-hidden pb-1 lg:pb-2">
               <span className="block font-semibold animate-rise" style={{ animationDelay: "700ms" }}>
                 Que te entiendan
               </span>
             </span>
             <span className="block overflow-hidden pb-2 lg:pb-3">
-              <span className="block italic font-light text-background/55 animate-rise" style={{ animationDelay: "820ms" }}>
+              <span className="block italic font-light text-foreground/70 animate-rise" style={{ animationDelay: "820ms" }}>
                 a la primera<span className="not-italic text-accent">.</span>
               </span>
             </span>
           </h1>
 
-          <p className="mt-5 md:mt-6 max-w-xl text-base md:text-lg font-light text-background/60 leading-relaxed animate-fade-up" style={{ animationDelay: "1100ms" }}>
+          <p className="mt-5 md:mt-6 hero-halo max-w-xl text-base md:text-lg text-foreground/80 leading-relaxed animate-fade-up" style={{ animationDelay: "1100ms" }}>
             Klearly elimina el ruido de fondo y suaviza tu acento al hablar inglés. En tiempo
             real, con tu propia voz.
           </p>
@@ -123,7 +120,7 @@ export default function Home() {
           <div className="mt-7 md:mt-8 animate-fade-up" style={{ animationDelay: "1300ms" }}>
             <AccessTrigger
               source="hero"
-              className="group relative inline-flex items-center gap-2 text-sm md:text-base font-medium px-7 py-4 rounded-full overflow-hidden bg-background text-foreground transition-transform duration-500 hover:scale-[1.03]"
+              className="group relative inline-flex items-center gap-2.5 text-base md:text-lg font-medium px-8 md:px-10 py-4 md:py-5 rounded-full overflow-hidden bg-foreground text-background shadow-[0_22px_50px_-18px_rgba(11,14,20,0.55)] transition-all duration-500 hover:scale-[1.03] hover:shadow-[0_26px_60px_-18px_rgba(239,51,51,0.6)]"
             >
               <span className={`absolute inset-0 bg-accent translate-y-full group-hover:translate-y-0 group-focus-visible:translate-y-0 transition-transform duration-500 ${EASE}`} />
               <span className="relative group-hover:text-white group-focus-visible:text-white transition-colors duration-500">Pide acceso anticipado</span>
@@ -132,8 +129,8 @@ export default function Home() {
           </div>
 
           <div className="mt-6 md:mt-7 flex items-center gap-3 animate-fade-up" style={{ animationDelay: "1500ms" }}>
-            <span className="text-xs md:text-sm text-background/45">Startup del programa</span>
-            <span className="inline-flex items-center rounded-full bg-white px-3 py-1.5 shadow-[0_8px_30px_-10px_rgba(0,0,0,0.6)]">
+            <span className="hero-halo text-xs md:text-sm text-foreground/65">Startup del programa</span>
+            <span className="inline-flex items-center rounded-full bg-white border border-border px-3 py-1.5 shadow-[0_6px_24px_-12px_rgba(11,14,20,0.25)]">
               <Image src="/google-for-startups.png" alt="Google for Startups" width={324} height={50} className="h-[18px] md:h-5 w-auto" />
             </span>
           </div>
@@ -141,9 +138,6 @@ export default function Home() {
 
         <div className="relative z-10 mt-6 md:mt-7 mb-5 animate-fade-in-slow" style={{ animationDelay: "1000ms" }}>
           <VoiceStream />
-          <p className="mt-3 text-center text-[10px] md:text-xs font-mono uppercase tracking-[0.25em] text-background/30">
-            Arrastra la línea
-          </p>
         </div>
       </header>
 
@@ -165,14 +159,16 @@ export default function Home() {
       </section>
 
       {/* ============ STORY ============ */}
-      <section aria-label="Por qué Klearly" className="relative z-10 w-full max-w-[1800px] mx-auto px-6 md:px-16 py-28 md:py-44">
+      <section aria-label="Por qué Klearly" className="relative z-10 bg-foreground text-background">
+        <div className="w-full max-w-[1800px] mx-auto px-6 md:px-16 py-28 md:py-44">
         <ScrollWords
           className="max-w-6xl text-3xl sm:text-4xl md:text-6xl leading-[1.15] md:leading-[1.1] tracking-tight font-medium"
           parts={[
-            { text: "Sabes lo que quieres decir. Lo sabes bien. Pero entre el ruido de la calle, el teclado y otro “can you repeat that?”, tu idea llega a medias.", className: "text-foreground" },
+            { text: "Sabes lo que quieres decir. Lo sabes bien. Pero entre el ruido de la calle, el teclado y otro “can you repeat that?”, tu idea llega a medias.", className: "text-background" },
             { text: " Klearly hace que llegue entera.", className: "text-accent italic font-light" },
           ]}
         />
+        </div>
       </section>
 
       {/* ============ DEMO (hidden while SHOW_CALL_DEMO is false) ============ */}
@@ -232,10 +228,10 @@ export default function Home() {
           <div className="mt-24 md:mt-36 rounded-3xl bg-foreground text-background px-7 py-14 md:px-16 md:py-20 relative overflow-hidden">
             <div
               className="absolute inset-0 pointer-events-none"
-              style={{ background: "radial-gradient(ellipse 50% 80% at 100% 100%, rgba(239,51,51,0.22), transparent 70%)" }}
+              style={{ background: "radial-gradient(ellipse 50% 80% at 100% 100%, rgba(239,51,51,0.24), transparent 70%)" }}
             />
             <p className="relative text-3xl sm:text-4xl md:text-6xl tracking-[-0.03em] font-medium leading-[1.05] max-w-[18ch]">
-              Tu voz sigue siendo <span className="italic font-light text-accent-gold">tuya</span>
+              Tu voz sigue siendo <span className="italic font-light text-accent">tuya</span>
               <span className="text-accent">.</span>
             </p>
             <p className="relative mt-6 md:mt-8 text-base md:text-xl font-light text-background/60 leading-relaxed max-w-xl">

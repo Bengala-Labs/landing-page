@@ -3,15 +3,19 @@
 import { useEffect, useRef } from "react";
 
 /*
- * The hero visual. A voice signal flows left to right, drawn as columns of
- * brand squares. Left of the Klearly line it carries noise: jitter, stray
- * particles, red interference. Right of the line only the voice remains.
- * The line can be dragged. A static frame is drawn for reduced motion.
+ * Decorative hero band. A voice signal drawn in brand squares flows left to
+ * right; left of the Klearly line it carries noise, right of it only the
+ * clean voice remains. Not interactive and deliberately quiet so the call to
+ * action keeps the attention. One static frame for reduced motion.
  */
 
+const INK = "11,14,20";
 const RED = "239,51,51";
 const GOLD = "252,182,65";
-const CREAM = "250,249,246";
+
+const ink = (a: number) => `rgba(${INK},${a.toFixed(3)})`;
+const red = (a: number) => `rgba(${RED},${a.toFixed(3)})`;
+const gold = (a: number) => `rgba(${GOLD},${a.toFixed(3)})`;
 
 function rand(a: number, b: number) {
   let h = (a * 374761393 + b * 668265263) | 0;
@@ -33,15 +37,13 @@ function voice(u: number) {
 }
 
 export default function VoiceStream({ className = "" }: { className?: string }) {
-  const wrapRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const handleRef = useRef<HTMLDivElement>(null);
+  const lineRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const wrap = wrapRef.current;
     const canvas = canvasRef.current;
-    const handle = handleRef.current;
-    if (!wrap || !canvas || !handle) return;
+    const line = lineRef.current;
+    if (!canvas || !line) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
@@ -50,81 +52,63 @@ export default function VoiceStream({ className = "" }: { className?: string }) 
     let h = 0;
     let raf = 0;
     let running = false;
-    let split = 0.5;
-    let target = 0.5;
-    let touched = false;
-    let dragging = false;
 
     const draw = (t: number) => {
-      if (!touched && !reduce) target = 0.5 + 0.07 * Math.sin(t * 0.00045);
-      split += (target - split) * (dragging ? 0.35 : 0.08);
-      handle.style.left = `${split * 100}%`;
-      const now = String(Math.round(split * 100));
-      if (handle.getAttribute("aria-valuenow") !== now) handle.setAttribute("aria-valuenow", now);
+      const split = reduce ? 0.5 : 0.5 + 0.04 * Math.sin(t * 0.0003);
+      line.style.left = `${split * 100}%`;
 
       ctx.clearRect(0, 0, w, h);
       const narrow = w < 768;
-      const step = narrow ? 8 : 10;
+      const step = narrow ? 7 : 8;
       const sq = step - 3;
       const cols = Math.ceil(w / step) + 1;
       const mid = Math.round(h / 2 / step) * step;
       const maxRows = Math.floor((h / 2 - step) / step);
       const sx = split * w;
-      const tq = Math.floor(t / 70);
-      const speed = narrow ? 0.045 : 0.06;
+      const tq = Math.floor(t / 90);
+      const speed = narrow ? 0.035 : 0.045;
 
-      // Soft glow where the voice is cleaned
-      const g = ctx.createLinearGradient(sx - 160, 0, sx + 160, 0);
-      g.addColorStop(0, `rgba(${RED},0)`);
-      g.addColorStop(0.5, `rgba(${RED},0.10)`);
-      g.addColorStop(1, `rgba(${RED},0)`);
+      const g = ctx.createRadialGradient(sx, h / 2, 0, sx, h / 2, h * 0.7);
+      g.addColorStop(0, red(0.05));
+      g.addColorStop(1, red(0));
       ctx.fillStyle = g;
-      ctx.fillRect(sx - 160, 0, 320, h);
+      ctx.fillRect(sx - h * 0.7, 0, h * 1.4, h);
 
       for (let c = 0; c < cols; c++) {
         const x = c * step;
-        const u = (x - t * speed) / (narrow ? 30 : 38);
+        // Fade both ends so the band dissolves into the page
+        const ends = smooth(0, 0.12, x / w) * smooth(0, 0.12, 1 - x / w);
+        if (ends <= 0.01) continue;
+        const u = (x - t * speed) / (narrow ? 28 : 34);
         const v = voice(u);
         const clean = x + sq / 2 >= sx;
-        const edge = 1 - smooth(0, 90, Math.abs(x - sx));
 
         let a: number;
         if (clean) {
           a = v;
         } else {
           const n = rand(c, tq);
-          const hum = 0.6 + 0.4 * Math.sin(c * 0.3 + t * 0.002);
-          a = Math.min(1, v * 0.8 + 0.1 + n * 0.42 * hum);
+          a = Math.min(1, v * 0.8 + 0.08 + n * 0.36);
         }
         const rows = Math.max(1, Math.round(a * maxRows));
 
         for (let r = 0; r < rows; r++) {
-          const top = r === rows - 1;
           if (clean) {
-            const k = 0.45 + 0.5 * (1 - r / Math.max(rows, 1));
-            ctx.fillStyle = top && v > 0.55 ? `rgba(${GOLD},0.95)` : `rgba(${CREAM},${k})`;
+            const k = (0.16 + 0.22 * (1 - r / rows)) * ends;
+            ctx.fillStyle = r === rows - 1 && v > 0.6 ? gold(0.75 * ends) : ink(k);
           } else {
             const p = rand(c * 31 + r, tq);
-            ctx.fillStyle =
-              p < 0.07 ? `rgba(${RED},0.75)` : p < 0.1 ? `rgba(${GOLD},0.5)` : `rgba(${CREAM},${0.18 + 0.12 * edge})`;
+            ctx.fillStyle = p < 0.05 ? red(0.4 * ends) : p < 0.08 ? gold(0.35 * ends) : ink(0.09 * ends);
           }
           ctx.fillRect(x, mid - (r + 1) * step + 2, sq, sq);
           ctx.fillRect(x, mid + r * step + 2, sq, sq);
         }
 
-        // Stray noise particles, dissolving as they reach the line
-        if (!clean) {
-          for (let k = 0; k < 2; k++) {
-            const p = rand(c * 7 + k, tq);
-            if (p < 0.16) {
-              const row = Math.floor(rand(c + k * 97, tq + 3) * maxRows);
-              const sign = rand(c, tq + k) < 0.5 ? -1 : 1;
-              const y = sign < 0 ? mid - (row + 1) * step + 2 : mid + row * step + 2;
-              const alpha = 0.55 * (1 - 0.7 * edge);
-              ctx.fillStyle = p < 0.05 ? `rgba(${RED},${alpha})` : p < 0.08 ? `rgba(${GOLD},${alpha * 0.8})` : `rgba(${CREAM},${alpha * 0.4})`;
-              ctx.fillRect(x, y, sq, sq);
-            }
-          }
+        if (!clean && rand(c * 7, tq) < 0.07) {
+          const row = Math.floor(rand(c + 97, tq + 3) * maxRows);
+          const y = rand(c, tq + 1) < 0.5 ? mid - (row + 1) * step + 2 : mid + row * step + 2;
+          ctx.fillStyle = red(0.25 * ends);
+          ctx.fillRect(x, y, sq, sq);
         }
       }
     };
@@ -154,85 +138,33 @@ export default function VoiceStream({ className = "" }: { className?: string }) 
       if (!running) draw(reduce ? 9000 : performance.now());
     };
 
-    const setFromPointer = (clientX: number) => {
-      const rect = wrap.getBoundingClientRect();
-      target = Math.min(0.92, Math.max(0.08, (clientX - rect.left) / rect.width));
-      if (!running) {
-        split = target;
-        draw(9000);
-      }
-    };
-    const onDown = (e: PointerEvent) => {
-      touched = true;
-      dragging = true;
-      wrap.setPointerCapture(e.pointerId);
-      setFromPointer(e.clientX);
-    };
-    const onMove = (e: PointerEvent) => {
-      if (dragging) setFromPointer(e.clientX);
-    };
-    const onUp = () => {
-      dragging = false;
-    };
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
-      e.preventDefault();
-      touched = true;
-      target = Math.min(0.92, Math.max(0.08, target + (e.key === "ArrowLeft" ? -0.05 : 0.05)));
-      if (!running) {
-        split = target;
-        draw(9000);
-      }
-    };
-
     const ro = new ResizeObserver(resize);
     ro.observe(canvas);
     resize();
     const io = new IntersectionObserver(([entry]) => (entry.isIntersecting ? start() : stop()));
     io.observe(canvas);
 
-    wrap.addEventListener("pointerdown", onDown);
-    wrap.addEventListener("pointermove", onMove);
-    wrap.addEventListener("pointerup", onUp);
-    wrap.addEventListener("pointercancel", onUp);
-    handle.addEventListener("keydown", onKey);
-
     return () => {
       stop();
       ro.disconnect();
       io.disconnect();
-      wrap.removeEventListener("pointerdown", onDown);
-      wrap.removeEventListener("pointermove", onMove);
-      wrap.removeEventListener("pointerup", onUp);
-      wrap.removeEventListener("pointercancel", onUp);
-      handle.removeEventListener("keydown", onKey);
     };
   }, []);
 
   return (
-    <div ref={wrapRef} className={`relative w-full select-none cursor-ew-resize touch-pan-y ${className}`}>
-      <canvas ref={canvasRef} aria-hidden="true" className="block w-full h-[180px] md:h-[200px] lg:h-[220px]" />
+    <div aria-hidden="true" className={`relative w-full pointer-events-none select-none ${className}`}>
+      <canvas ref={canvasRef} className="block w-full h-[120px] md:h-[140px] lg:h-[150px]" />
 
-      <span className="absolute top-0 left-6 md:left-16 text-[10px] md:text-xs font-mono uppercase tracking-[0.3em] text-background/40">
+      <span className="absolute -top-1 left-6 md:left-16 text-[10px] font-mono uppercase tracking-[0.3em] text-foreground/30">
         Tu micrófono
       </span>
-      <span className="absolute top-0 right-6 md:right-16 text-[10px] md:text-xs font-mono uppercase tracking-[0.3em] text-accent-gold">
+      <span className="absolute -top-1 right-6 md:right-16 text-[10px] font-mono uppercase tracking-[0.3em] text-foreground/30">
         Lo que escuchan
       </span>
 
-      <div
-        ref={handleRef}
-        role="slider"
-        tabIndex={0}
-        aria-label="Comparar la voz antes y después de Klearly"
-        aria-valuemin={0}
-        aria-valuemax={100}
-        aria-valuenow={50}
-        className="absolute top-0 bottom-0 w-px -translate-x-1/2 bg-accent focus:outline-none group"
-        style={{ left: "50%" }}
-      >
-        <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 inline-flex items-center gap-2 whitespace-nowrap rounded-full bg-accent text-white text-[10px] md:text-[11px] font-mono uppercase tracking-[0.2em] px-3 py-1.5 shadow-[0_0_40px_rgba(239,51,51,0.6)] group-focus-visible:ring-2 group-focus-visible:ring-background">
-          <span aria-hidden="true">‹</span>Klearly<span aria-hidden="true">›</span>
+      <div ref={lineRef} className="absolute top-2 bottom-2 w-px -translate-x-1/2 bg-accent/40" style={{ left: "50%" }}>
+        <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 whitespace-nowrap rounded-full bg-background border border-accent/30 text-accent text-[9px] md:text-[10px] font-mono uppercase tracking-[0.25em] px-2.5 py-1">
+          Klearly
         </span>
       </div>
     </div>

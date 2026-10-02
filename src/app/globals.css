@@ -211,6 +211,14 @@ button {
   will-change: transform;
 }
 
+/* Soft cream halo so hero copy stays crisp over the animated background */
+.hero-halo {
+  text-shadow:
+    0 0 1px var(--background),
+    0 0 12px var(--background),
+    0 0 28px var(--background);
+}
+
 /* Hero entrance animations (CSS-only so the page can render on the server) */
 @keyframes rise {
   from {

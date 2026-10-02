@@ -32,7 +32,7 @@ const BURST = Array.from({ length: 22 }, (_, i) => {
     dy: Math.round(Math.sin(angle) * dist),
     r: ((i * 53) % 180) - 90,
     size: 6 + (i % 3) * 2,
-    color: i % 4 === 0 ? "#EF3333" : i % 4 === 1 ? "#FCB641" : i % 4 === 2 ? "#FAF9F6" : "#EF3333",
+    color: i % 4 === 0 ? "#EF3333" : i % 4 === 1 ? "#FCB641" : i % 4 === 2 ? "#0B0E14" : "#EF3333",
     delay: (i % 5) * 25,
   };
 });
@@ -168,7 +168,7 @@ export default function AccessModal() {
     >
       <div
         aria-hidden="true"
-        className={`fixed inset-0 bg-[#05070b]/75 backdrop-blur-md transition-opacity duration-300 ${visible ? "opacity-100" : "opacity-0"}`}
+        className={`fixed inset-0 bg-[#0B0E14]/35 backdrop-blur-md transition-opacity duration-300 ${visible ? "opacity-100" : "opacity-0"}`}
       />
 
       <div
@@ -178,7 +178,7 @@ export default function AccessModal() {
         }}
       >
         <div
-          className={`relative w-full max-w-4xl overflow-hidden rounded-[28px] border border-white/10 bg-[#0f131b] text-background shadow-[0_80px_160px_-40px_rgba(239,51,51,0.5)] grid md:grid-cols-[0.9fr_1.1fr] transition-all duration-500 ${EASE} ${
+          className={`relative w-full max-w-4xl overflow-hidden rounded-[28px] border border-border bg-background text-foreground shadow-[0_60px_140px_-40px_rgba(11,14,20,0.45)] grid md:grid-cols-[0.9fr_1.1fr] transition-all duration-500 ${EASE} ${
             visible ? "opacity-100 translate-y-0 scale-100" : "opacity-0 translate-y-8 scale-[0.96]"
           }`}
         >
@@ -186,7 +186,7 @@ export default function AccessModal() {
             type="button"
             onClick={close}
             aria-label="Cerrar"
-            className="absolute top-4 right-4 z-20 w-10 h-10 rounded-full bg-white/[0.06] border border-white/10 text-background/70 hover:text-background hover:bg-white/[0.12] transition-colors flex items-center justify-center"
+            className="absolute top-4 right-4 z-20 w-10 h-10 rounded-full bg-foreground/[0.04] border border-foreground/10 text-foreground/60 hover:text-foreground hover:bg-foreground/[0.08] transition-colors flex items-center justify-center"
           >
             <svg viewBox="0 0 24 24" className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
               <path d="M6 6l12 12M18 6L6 18" />
@@ -194,19 +194,19 @@ export default function AccessModal() {
           </button>
 
           {/* Visual panel */}
-          <div className="relative hidden md:flex flex-col justify-between p-10 overflow-hidden border-r border-white/[0.06]">
+          <div className="relative hidden md:flex flex-col justify-between p-10 overflow-hidden border-r border-border bg-white">
             <div
               aria-hidden="true"
               className="absolute inset-0"
               style={{
                 background:
-                  "radial-gradient(ellipse 90% 60% at 20% 110%, rgba(239,51,51,0.38), transparent 65%), radial-gradient(ellipse 60% 40% at 90% 0%, rgba(252,182,65,0.12), transparent 70%)",
+                  "radial-gradient(ellipse 90% 60% at 20% 110%, rgba(239,51,51,0.16), transparent 65%), radial-gradient(ellipse 60% 40% at 90% 0%, rgba(252,182,65,0.16), transparent 70%)",
               }}
             />
             <div className="relative flex items-center gap-3">
-              <KlearlyMark className="w-7 h-7 text-background" />
-              <span className="text-sm text-background/80">
-                Bengala <span className="font-semibold text-background">Klearly</span>
+              <KlearlyMark className="w-7 h-7 text-foreground" />
+              <span className="text-sm text-foreground/80">
+                Bengala <span className="font-semibold text-foreground">Klearly</span>
               </span>
             </div>
 
@@ -214,14 +214,14 @@ export default function AccessModal() {
               {Array.from({ length: BARS }).map((_, i) => (
                 <span
                   key={i}
-                  className={`flex-1 h-full rounded-[2px] origin-center animate-eq ${i % 7 === 3 ? "bg-accent-gold" : "bg-background/85"}`}
+                  className={`flex-1 h-full rounded-[2px] origin-center animate-eq ${i % 7 === 3 ? "bg-accent-gold" : "bg-foreground/85"}`}
                   style={{ animationDelay: `${(i * 113) % 1000}ms`, animationDuration: `${900 + ((i * 71) % 600)}ms` }}
                 />
               ))}
             </div>
 
             <div className="relative">
-              <span className="block text-[10px] font-mono uppercase tracking-[0.3em] text-background/40 mb-3">
+              <span className="block text-[10px] font-mono uppercase tracking-[0.3em] text-foreground/40 mb-3">
                 Del otro lado de la llamada
               </span>
               <p className="text-2xl lg:text-3xl font-medium tracking-tight leading-snug">
@@ -255,7 +255,7 @@ export default function AccessModal() {
                       }
                     />
                   ))}
-                  <span className="relative flex items-center justify-center w-16 h-16 rounded-full bg-accent-gold text-foreground animate-pop">
+                  <span className="relative flex items-center justify-center w-16 h-16 rounded-full bg-accent-gold text-background animate-pop">
                     <svg viewBox="0 0 24 24" className="w-8 h-8" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                       <path d="M5 12.5l4.5 4.5L19 7.5" className="animate-draw" />
                     </svg>
@@ -265,11 +265,11 @@ export default function AccessModal() {
                 <h2 id={`${id}-title`} className="text-4xl md:text-5xl font-medium tracking-[-0.03em] leading-[1.02]">
                   Estás dentro<span className="text-accent">.</span>
                 </h2>
-                <p className="mt-5 text-base md:text-lg font-light text-background/60 leading-relaxed">
-                  Te escribiremos a <span className="text-background font-normal break-all">{joined}</span> cuando
+                <p className="mt-5 text-base md:text-lg font-light text-foreground/60 leading-relaxed">
+                  Te escribiremos a <span className="text-foreground font-normal break-all">{joined}</span> cuando
                   sea tu turno.
                 </p>
-                <p className="mt-3 text-sm font-light text-background/45 leading-relaxed">
+                <p className="mt-3 text-sm font-light text-foreground/45 leading-relaxed">
                   Mientras tanto, ¿conoces a alguien que lo necesita?
                 </p>
 
@@ -277,7 +277,7 @@ export default function AccessModal() {
                   <button
                     type="button"
                     onClick={share}
-                    className="group relative inline-flex items-center gap-2 rounded-full bg-background text-foreground px-6 py-3.5 text-sm md:text-base font-medium overflow-hidden"
+                    className="group relative inline-flex items-center gap-2 rounded-full bg-foreground text-background px-6 py-3.5 text-sm md:text-base font-medium overflow-hidden"
                   >
                     <span className={`absolute inset-0 bg-accent translate-y-full group-hover:translate-y-0 transition-transform duration-500 ${EASE}`} />
                     <span className="relative group-hover:text-white transition-colors duration-500">
@@ -288,25 +288,25 @@ export default function AccessModal() {
                   <button
                     type="button"
                     onClick={close}
-                    className="rounded-full border border-white/15 px-6 py-3.5 text-sm md:text-base font-medium text-background/80 hover:text-background hover:border-white/30 transition-colors"
+                    className="rounded-full border border-foreground/15 px-6 py-3.5 text-sm md:text-base font-medium text-foreground/80 hover:text-foreground hover:border-foreground/30 transition-colors"
                   >
                     Listo
                   </button>
                 </div>
-                <button type="button" onClick={useAnother} className="mt-6 text-sm text-background/40 hover:text-background transition-colors">
+                <button type="button" onClick={useAnother} className="mt-6 text-sm text-foreground/40 hover:text-foreground transition-colors">
                   Usar otro correo
                 </button>
               </div>
             ) : (
               <>
                 <div className="md:hidden flex items-center gap-3 mb-8">
-                  <KlearlyMark className="w-6 h-6 text-background" />
-                  <span className="text-sm text-background/80">
-                    Bengala <span className="font-semibold text-background">Klearly</span>
+                  <KlearlyMark className="w-6 h-6 text-foreground" />
+                  <span className="text-sm text-foreground/80">
+                    Bengala <span className="font-semibold text-foreground">Klearly</span>
                   </span>
                 </div>
 
-                <span className="flex items-center gap-2 text-[10px] md:text-[11px] font-mono uppercase tracking-[0.3em] text-accent-gold">
+                <span className="flex items-center gap-2 text-[10px] md:text-[11px] font-mono uppercase tracking-[0.3em] text-accent">
                   <span className="relative flex h-1.5 w-1.5">
                     <span className="absolute inline-flex h-full w-full rounded-full bg-accent-gold opacity-75 animate-ping" />
                     <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-accent-gold" />
@@ -315,17 +315,17 @@ export default function AccessModal() {
                 </span>
 
                 <h2 id={`${id}-title`} className="mt-5 text-[2.1rem] sm:text-4xl md:text-[2.75rem] font-medium tracking-[-0.03em] leading-[1.04]">
-                  Sé de los primeros en <span className="italic font-light text-background/55">sonar claro</span>
+                  Sé de los primeros en <span className="italic font-light text-foreground/55">sonar claro</span>
                   <span className="text-accent">.</span>
                 </h2>
-                <p className="mt-5 text-base font-light text-background/60 leading-relaxed">
+                <p className="mt-5 text-base font-light text-foreground/60 leading-relaxed">
                   Estamos abriendo Klearly a un primer grupo de personas y equipos. Deja tu correo y
                   guárdate un lugar.
                 </p>
 
                 <ul className="mt-7 flex flex-col gap-3">
                   {benefits.map((b) => (
-                    <li key={b} className="flex items-start gap-3 text-sm md:text-[15px] text-background/85">
+                    <li key={b} className="flex items-start gap-3 text-sm md:text-[15px] text-foreground/85">
                       <span className="mt-[0.45em] inline-block w-1.5 h-1.5 shrink-0 bg-accent" />
                       {b}
                     </li>
@@ -333,7 +333,7 @@ export default function AccessModal() {
                 </ul>
 
                 <form noValidate onSubmit={onSubmit} className="mt-8" aria-busy={submitting}>
-                  <label htmlFor={`${id}-email`} className="block text-xs font-medium text-background/55 mb-2.5 pl-1">
+                  <label htmlFor={`${id}-email`} className="block text-xs font-medium text-foreground/55 mb-2.5 pl-1">
                     Tu correo
                   </label>
                   <div className="flex flex-col sm:flex-row gap-2.5">
@@ -361,8 +361,8 @@ export default function AccessModal() {
                       aria-invalid={invalid}
                       aria-describedby={`${id}-hint`}
                       disabled={submitting}
-                      className={`flex-1 min-w-0 rounded-2xl bg-white/[0.05] border px-5 py-4 text-base text-background placeholder:text-background/30 outline-none transition-all duration-300 focus:bg-white/[0.08] focus:shadow-[0_0_0_5px_rgba(239,51,51,0.16)] disabled:opacity-60 ${
-                        invalid ? "border-accent/80" : "border-white/10 focus:border-white/35"
+                      className={`flex-1 min-w-0 rounded-2xl bg-white border px-5 py-4 text-base text-foreground placeholder:text-foreground/35 outline-none transition-all duration-300 focus:shadow-[0_0_0_5px_rgba(239,51,51,0.16)] disabled:opacity-60 ${
+                        invalid ? "border-accent/80" : "border-border focus:border-foreground/40"
                       }`}
                     />
                     {/* Honeypot for bots; Formspree discards submissions that fill it. */}
@@ -372,27 +372,27 @@ export default function AccessModal() {
                       disabled={submitting}
                       className="group relative shrink-0 inline-flex items-center justify-center gap-2 rounded-2xl bg-accent text-white px-6 py-4 text-base font-medium overflow-hidden transition-transform duration-300 active:scale-[0.98] disabled:cursor-wait shadow-[0_12px_40px_-12px_rgba(239,51,51,0.8)]"
                     >
-                      <span className={`absolute inset-0 bg-background translate-y-full group-hover:translate-y-0 group-focus-visible:translate-y-0 transition-transform duration-500 ${EASE}`} />
+                      <span className={`absolute inset-0 bg-foreground translate-y-full group-hover:translate-y-0 group-focus-visible:translate-y-0 transition-transform duration-500 ${EASE}`} />
                       {submitting ? (
                         <span className="relative inline-flex items-center gap-2">
                           <span className="w-4 h-4 rounded-full border-2 border-white/30 border-t-white animate-spin" aria-hidden="true" />
                           Enviando
                         </span>
                       ) : (
-                        <span className="relative inline-flex items-center gap-2 group-hover:text-foreground group-focus-visible:text-foreground transition-colors duration-500">
+                        <span className="relative inline-flex items-center gap-2 group-hover:text-background group-focus-visible:text-background transition-colors duration-500">
                           Quiero acceso
                           <span className={`inline-block transition-transform duration-500 ${EASE} group-hover:translate-x-0.5 group-hover:-translate-y-0.5`}>↗</span>
                         </span>
                       )}
                     </button>
                   </div>
-                  <p id={`${id}-hint`} aria-live="polite" className={`mt-3 pl-1 text-xs md:text-sm ${invalid ? "text-accent-light" : "text-background/35"}`}>
+                  <p id={`${id}-hint`} aria-live="polite" className={`mt-3 pl-1 text-xs md:text-sm ${invalid ? "text-accent" : "text-foreground/35"}`}>
                     {invalid ? (
                       error
                     ) : (
                       <>
                         Solo te escribimos para darte acceso.{" "}
-                        <a href="/politica-de-privacidad" className="underline decoration-white/25 underline-offset-2 hover:text-background transition-colors">
+                        <a href="/politica-de-privacidad" className="underline decoration-foreground/25 underline-offset-2 hover:text-foreground transition-colors">
                           Privacidad
                         </a>
                       </>
