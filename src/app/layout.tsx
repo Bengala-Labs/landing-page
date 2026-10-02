@@ -23,29 +23,28 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL("https://bengala.ai"),
   title: {
-    default: "Bengala AI | Productos de IA que terminan el trabajo",
-    template: "%s | Bengala AI"
+    default: "Bengala Klearly | Que te entiendan a la primera",
+    template: "%s | Bengala"
   },
-  description: "Bengala crea productos de inteligencia artificial que llevan cada tarea de principio a fin, con verificación y control humano.",
+  description: "Klearly elimina el ruido de fondo y suaviza tu acento al hablar inglés, en tiempo real y con tu propia voz. Un producto de Bengala.",
   keywords: [
-    "Bengala AI",
-    "Bengala Labs",
-    "Productos de inteligencia artificial",
-    "Empresa de inteligencia artificial",
-    "Agentes de IA",
-    "Seguridad de la IA",
-    "Automatización de procesos",
-    "Inteligencia Artificial",
-    "Automatización de flujos de trabajo",
-    "Inteligencia Artificial España",
-    "Workflow Automation",
-    "Automatización empresarial"
+    "Bengala",
+    "Bengala Klearly",
+    "Klearly",
+    "Eliminación de ruido en tiempo real",
+    "Cancelación de ruido con IA",
+    "Suavizar acento en inglés",
+    "Conversión de acento",
+    "Accent conversion",
+    "AI noise cancellation",
+    "Inglés para centros de contacto",
+    "Productos de inteligencia artificial"
   ],
   authors: [{ name: "Bengala AI", url: "https://bengala.ai" }],
   creator: "Bengala AI",
   publisher: "Bengala AI",
   category: "technology",
-  classification: "Artificial Intelligence Products",
+  classification: "Artificial Intelligence Software",
   alternates: {
     canonical: "https://bengala.ai",
     languages: {
@@ -61,21 +60,21 @@ export const metadata: Metadata = {
     alternateLocale: ["es_MX", "es_CO", "es_AR", "en_US"],
     url: "https://bengala.ai",
     siteName: "Bengala AI",
-    title: "Bengala AI | Productos de IA que terminan el trabajo",
-    description: "Bengala crea productos de inteligencia artificial que llevan cada tarea de principio a fin, con verificación y control humano.",
+    title: "Bengala Klearly | Que te entiendan a la primera",
+    description: "Klearly elimina el ruido de fondo y suaviza tu acento al hablar inglés, en tiempo real y con tu propia voz. Un producto de Bengala.",
     images: [
       {
         url: "/og-image.jpg",
         width: 1200,
         height: 630,
-        alt: "Bengala AI - Productos de inteligencia artificial",
+        alt: "Bengala Klearly - Que te entiendan a la primera",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Bengala AI | Productos de IA que terminan el trabajo",
-    description: "Productos de inteligencia artificial que terminan el trabajo.",
+    title: "Bengala Klearly | Que te entiendan a la primera",
+    description: "Elimina el ruido de fondo y suaviza tu acento en inglés, en tiempo real.",
     images: ["/og-image.jpg"],
     creator: "@bengala_ai",
   },

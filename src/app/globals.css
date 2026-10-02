@@ -272,6 +272,43 @@ button {
   animation: grow-y 2.6s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
+/* Call demo equalizer */
+@keyframes eq {
+  0%,
+  100% {
+    transform: scaleY(0.18);
+  }
+  50% {
+    transform: scaleY(0.95);
+  }
+}
+
+@keyframes eq-noisy {
+  0% {
+    transform: scaleY(0.55);
+  }
+  25% {
+    transform: scaleY(0.9);
+  }
+  50% {
+    transform: scaleY(0.4);
+  }
+  75% {
+    transform: scaleY(1);
+  }
+  100% {
+    transform: scaleY(0.6);
+  }
+}
+
+.animate-eq {
+  animation: eq 1s ease-in-out infinite;
+}
+
+.animate-eq-noisy {
+  animation: eq-noisy 0.3s linear infinite;
+}
+
 /* Respect users who prefer reduced motion */
 @media (prefers-reduced-motion: reduce) {
   *,

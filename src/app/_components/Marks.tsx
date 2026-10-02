@@ -6,7 +6,7 @@
 const fills: Record<string, string> = { R: "#EF3333", G: "#FCB641", I: "currentColor" };
 
 export function BlockGlyph({ pattern, className = "" }: { pattern: string[]; className?: string }) {
-  const n = pattern.length;
+  const n = Math.max(pattern.length, ...pattern.map((r) => r.length));
   return (
     <svg viewBox={`0 0 ${n * 10} ${n * 10}`} className={className} aria-hidden="true">
       {pattern.flatMap((row, y) =>
@@ -18,4 +18,11 @@ export function BlockGlyph({ pattern, className = "" }: { pattern: string[]; cla
       )}
     </svg>
   );
+}
+
+/* Klearly mark: a K drawn in blocks, its arms resolving from noise (red) to clarity (gold). */
+export const KLEARLY_MARK = ["I...R", "I..R.", "III..", "I..G.", "I...G"];
+
+export function KlearlyMark({ className = "" }: { className?: string }) {
+  return <BlockGlyph pattern={KLEARLY_MARK} className={className} />;
 }
