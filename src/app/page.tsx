@@ -5,11 +5,12 @@ import BlockField from "./_components/BlockField";
 import VoiceStream from "./_components/VoiceStream";
 import ScrollWords from "./_components/ScrollWords";
 import CallDemo from "./_components/CallDemo";
+import AccessModal from "./_components/AccessModal";
+import AccessTrigger from "./_components/AccessTrigger";
 import { BlockGlyph, KlearlyMark } from "./_components/Marks";
 import { SHOW_CALL_DEMO } from "./_components/flags";
 
 const EMAIL = "hola@bengala.ai";
-const ACCESS_URL = `mailto:${EMAIL}?subject=Acceso%20anticipado%20a%20Klearly`;
 
 const EASE = "ease-[cubic-bezier(0.16,1,0.3,1)]";
 
@@ -62,23 +63,6 @@ function Eyebrow({ children, className = "" }: { children: React.ReactNode; clas
   );
 }
 
-function AccessButton({ dark = false, className = "" }: { dark?: boolean; className?: string }) {
-  return (
-    <a
-      href={ACCESS_URL}
-      className={`group relative inline-flex items-center gap-2 text-sm md:text-base font-medium px-7 py-4 rounded-full overflow-hidden transition-transform duration-500 hover:scale-[1.03] ${
-        dark ? "bg-foreground text-background" : "bg-background text-foreground"
-      } ${className}`}
-    >
-      <span className={`absolute inset-0 bg-accent translate-y-full group-hover:translate-y-0 transition-transform duration-500 ${EASE}`} />
-      <span className="relative group-hover:text-white transition-colors duration-500">Pide acceso anticipado</span>
-      <span className={`relative inline-block group-hover:text-white transition-all duration-500 ${EASE} group-hover:translate-x-1 group-hover:-translate-y-1`}>
-        ↗
-      </span>
-    </a>
-  );
-}
-
 export default function Home() {
   return (
     <main className="relative min-h-[100dvh] w-full flex flex-col overflow-x-hidden bg-background text-foreground font-sans selection:bg-accent selection:text-white">
@@ -90,7 +74,7 @@ export default function Home() {
         }}
       />
 
-      <Nav accessUrl={ACCESS_URL} />
+      <Nav />
 
       {/* ============ HERO ============ */}
       <header className="relative min-h-[100dvh] w-full flex flex-col bg-foreground text-background overflow-hidden">
@@ -136,16 +120,26 @@ export default function Home() {
             real, con tu propia voz.
           </p>
 
-          <div className="mt-7 md:mt-8 flex flex-col sm:flex-row items-center gap-5 sm:gap-8 animate-fade-up" style={{ animationDelay: "1300ms" }}>
-            <AccessButton />
-            <a href={SHOW_CALL_DEMO ? "#klearly" : "#como-funciona"} className="group inline-flex items-center gap-2 text-sm font-light text-background/55 hover:text-background transition-colors">
-              Mira cómo funciona
-              <span className={`inline-block text-accent transition-transform duration-500 ${EASE} group-hover:translate-y-1`}>↓</span>
-            </a>
+          <div className="mt-7 md:mt-8 animate-fade-up" style={{ animationDelay: "1300ms" }}>
+            <AccessTrigger
+              source="hero"
+              className="group relative inline-flex items-center gap-2 text-sm md:text-base font-medium px-7 py-4 rounded-full overflow-hidden bg-background text-foreground transition-transform duration-500 hover:scale-[1.03]"
+            >
+              <span className={`absolute inset-0 bg-accent translate-y-full group-hover:translate-y-0 group-focus-visible:translate-y-0 transition-transform duration-500 ${EASE}`} />
+              <span className="relative group-hover:text-white group-focus-visible:text-white transition-colors duration-500">Pide acceso anticipado</span>
+              <span className={`relative inline-block group-hover:text-white group-focus-visible:text-white transition-all duration-500 ${EASE} group-hover:translate-x-1 group-hover:-translate-y-1`}>↗</span>
+            </AccessTrigger>
+          </div>
+
+          <div className="mt-6 md:mt-7 flex items-center gap-3 animate-fade-up" style={{ animationDelay: "1500ms" }}>
+            <span className="text-xs md:text-sm text-background/45">Startup del programa</span>
+            <span className="inline-flex items-center rounded-full bg-white px-3 py-1.5 shadow-[0_8px_30px_-10px_rgba(0,0,0,0.6)]">
+              <Image src="/google-for-startups.png" alt="Google for Startups" width={324} height={50} className="h-[18px] md:h-5 w-auto" />
+            </span>
           </div>
         </div>
 
-        <div className="relative z-10 mt-10 md:mt-12 mb-6 animate-fade-in-slow" style={{ animationDelay: "1000ms" }}>
+        <div className="relative z-10 mt-6 md:mt-7 mb-5 animate-fade-in-slow" style={{ animationDelay: "1000ms" }}>
           <VoiceStream />
           <p className="mt-3 text-center text-[10px] md:text-xs font-mono uppercase tracking-[0.25em] text-background/30">
             Arrastra la línea
@@ -294,12 +288,20 @@ export default function Home() {
           </Reveal>
           <Reveal delay={250}>
             <p className="mt-8 md:mt-10 text-base md:text-lg font-light text-background/55 max-w-md mx-auto leading-relaxed">
-              Estamos abriendo Klearly a un primer grupo de personas y equipos. Te escribimos cuando
-              sea tu turno.
+              Estamos abriendo Klearly a un primer grupo de personas y equipos. Guárdate un lugar.
             </p>
           </Reveal>
           <Reveal delay={400}>
-            <AccessButton className="mt-10 md:mt-12" />
+            <div className="mt-10 md:mt-12">
+            <AccessTrigger
+              source="cierre"
+              className="group relative inline-flex items-center gap-2 text-sm md:text-base font-medium px-7 py-4 rounded-full overflow-hidden bg-background text-foreground transition-transform duration-500 hover:scale-[1.03]"
+            >
+              <span className={`absolute inset-0 bg-accent translate-y-full group-hover:translate-y-0 group-focus-visible:translate-y-0 transition-transform duration-500 ${EASE}`} />
+              <span className="relative group-hover:text-white group-focus-visible:text-white transition-colors duration-500">Pide acceso anticipado</span>
+              <span className={`relative inline-block group-hover:text-white group-focus-visible:text-white transition-all duration-500 ${EASE} group-hover:translate-x-1 group-hover:-translate-y-1`}>↗</span>
+            </AccessTrigger>
+            </div>
           </Reveal>
         </div>
       </section>
@@ -313,6 +315,12 @@ export default function Home() {
               Bengala crea productos de inteligencia artificial. Klearly es el que estamos
               construyendo ahora.
             </p>
+            <div className="flex items-center gap-3">
+              <span className="text-xs text-background/45">Startup del programa</span>
+              <span className="inline-flex items-center rounded-full bg-white px-3 py-1.5">
+                <Image src="/google-for-startups.png" alt="Google for Startups" width={324} height={50} className="h-[18px] w-auto" />
+              </span>
+            </div>
           </div>
 
           <div className="md:col-span-6 flex gap-16 md:gap-24 md:justify-end text-sm">
@@ -328,7 +336,7 @@ export default function Home() {
               ))}
             </ul>
             <ul className="flex flex-col gap-3">
-              <li><a href={ACCESS_URL} className="text-background/55 hover:text-accent transition-colors">Acceso anticipado</a></li>
+              <li><AccessTrigger source="footer" className="text-background/55 hover:text-accent transition-colors">Acceso anticipado</AccessTrigger></li>
               <li><a href={`mailto:${EMAIL}`} className="text-background/55 hover:text-accent transition-colors">{EMAIL}</a></li>
               <li>
                 <a href="https://github.com/Bengala-Labs" target="_blank" rel="noopener noreferrer" className="text-background/55 hover:text-accent transition-colors">
@@ -347,6 +355,8 @@ export default function Home() {
           </div>
         </div>
       </footer>
+
+      <AccessModal />
 
       {/* Structured data */}
       <script
@@ -373,6 +383,11 @@ export default function Home() {
                   "Real-time Audio Processing",
                 ],
                 sameAs: ["https://twitter.com/bengala_ai", "https://github.com/Bengala-Labs"],
+                memberOf: {
+                  "@type": "Organization",
+                  name: "Google for Startups",
+                  url: "https://startup.google.com",
+                },
               },
               {
                 "@type": "SoftwareApplication",

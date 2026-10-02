@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { SHOW_CALL_DEMO } from "./flags";
+import { openAccessModal } from "./accessEvents";
 
 const links = [
   ...(SHOW_CALL_DEMO ? [{ href: "#klearly", label: "Klearly" }] : []),
@@ -10,7 +11,7 @@ const links = [
   { href: "#para-quien", label: "Para quién" },
 ];
 
-export default function Nav({ accessUrl }: { accessUrl: string }) {
+export default function Nav() {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -59,8 +60,10 @@ export default function Nav({ accessUrl }: { accessUrl: string }) {
           ))}
         </ul>
 
-        <a
-          href={accessUrl}
+        <button
+          type="button"
+          aria-haspopup="dialog"
+          onClick={() => openAccessModal("nav")}
           className="group relative inline-flex items-center gap-2 text-xs md:text-sm font-medium text-foreground bg-background pl-4 pr-3.5 py-2 md:pl-5 md:pr-4 md:py-2.5 rounded-full overflow-hidden animate-fade-down"
           style={{ animationDelay: "500ms" }}
         >
@@ -69,7 +72,7 @@ export default function Nav({ accessUrl }: { accessUrl: string }) {
           <span className="relative inline-block group-hover:text-white transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
             ↗
           </span>
-        </a>
+        </button>
       </div>
     </nav>
   );
