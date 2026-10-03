@@ -65,8 +65,10 @@ export const metadata: Metadata = {
     images: [
       {
         url: "/og-image.jpg",
+        secureUrl: "https://bengala.ai/og-image.jpg",
         width: 1200,
         height: 630,
+        type: "image/jpeg",
         alt: "Bengala Klearly - Que te entiendan a la primera",
       },
     ],
@@ -102,8 +104,16 @@ export const metadata: Metadata = {
     },
   },
   icons: {
-    icon: "/icon.svg",
-    apple: "/icon.svg",
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/icon.svg", type: "image/svg+xml" },
+      { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/icon-512.png", sizes: "512x512", type: "image/png" },
+    ],
+    shortcut: "/favicon.ico",
+    apple: [
+      { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+    ],
   },
 };
 
