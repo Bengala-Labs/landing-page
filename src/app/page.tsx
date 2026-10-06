@@ -121,7 +121,6 @@ export default function Home() {
           </div>
 
           <div className="mt-6 md:mt-7 flex items-center gap-3 animate-fade-up" style={{ animationDelay: "1500ms" }}>
-            <span className="hero-halo text-xs md:text-sm text-foreground/65">Startup del programa</span>
             <span className="inline-flex items-center rounded-full bg-white border border-border px-3 py-1.5 shadow-[0_6px_24px_-12px_rgba(11,14,20,0.25)]">
               <Image src="/google-for-startups.png" alt="Google for Startups" width={324} height={50} className="h-[18px] md:h-5 w-auto" />
             </span>
@@ -304,7 +303,6 @@ export default function Home() {
               construyendo ahora.
             </p>
             <div className="flex items-center gap-3">
-              <span className="text-xs text-background/45">Startup del programa</span>
               <span className="inline-flex items-center rounded-full bg-white px-3 py-1.5">
                 <Image src="/google-for-startups.png" alt="Google for Startups" width={324} height={50} className="h-[18px] w-auto" />
               </span>

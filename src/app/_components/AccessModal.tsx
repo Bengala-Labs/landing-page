@@ -6,43 +6,21 @@ import { KlearlyMark } from "./Marks";
 
 /*
  * Early-access modal for Klearly. One instance per page, opened by
- * AccessTrigger buttons. Posts the email to Formspree in the background.
- * Nothing is persisted: a reload always starts from the form.
+ * AccessTrigger buttons. Single purpose: collect an email. Posts it to
+ * Formspree in the background. Nothing is persisted between visits.
  */
 
 const ENDPOINT = "https://formspree.io/f/mqpaorpv";
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const TRACKED_PARAMS = ["utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content", "ref"];
-const EASE = "ease-[cubic-bezier(0.16,1,0.3,1)]";
-
-const benefits = [
-  "Acceso antes del lanzamiento abierto",
-  "Línea directa con el equipo que lo construye",
-  "Sin compromiso. Un correo cuando sea tu turno",
-];
 
 type Status = "idle" | "submitting" | "error" | "success";
-
-/* Deterministic burst of brand squares around the success check. */
-const BURST = Array.from({ length: 22 }, (_, i) => {
-  const angle = (i / 22) * Math.PI * 2 + (i % 3) * 0.35;
-  const dist = 70 + ((i * 37) % 60);
-  return {
-    dx: Math.round(Math.cos(angle) * dist),
-    dy: Math.round(Math.sin(angle) * dist),
-    r: ((i * 53) % 180) - 90,
-    size: 6 + (i % 3) * 2,
-    color: i % 4 === 0 ? "#EF3333" : i % 4 === 1 ? "#FCB641" : i % 4 === 2 ? "#0B0E14" : "#EF3333",
-    delay: (i % 5) * 25,
-  };
-});
-
-const BARS = 34;
 
 export default function AccessModal() {
   const id = useId();
   const dialogRef = useRef<HTMLDialogElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const doneRef = useRef<HTMLButtonElement>(null);
   const lastFocus = useRef<HTMLElement | null>(null);
   const closeTimer = useRef<number | undefined>(undefined);
 
@@ -52,7 +30,6 @@ export default function AccessModal() {
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState("");
   const [joined, setJoined] = useState("");
-  const [shared, setShared] = useState(false);
 
   const close = useCallback(() => {
     setVisible(false);
@@ -61,7 +38,7 @@ export default function AccessModal() {
       dialogRef.current?.close();
       document.documentElement.style.overflow = "";
       lastFocus.current?.focus({ preventScroll: true });
-    }, 280);
+    }, 200);
   }, []);
 
   useEffect(() => {
@@ -74,7 +51,7 @@ export default function AccessModal() {
       if (!dialog.open) dialog.showModal();
       document.documentElement.style.overflow = "hidden";
       requestAnimationFrame(() => setVisible(true));
-      window.setTimeout(() => inputRef.current?.focus({ preventScroll: true }), 80);
+      window.setTimeout(() => inputRef.current?.focus({ preventScroll: true }), 60);
     };
     window.addEventListener(OPEN_ACCESS_EVENT, onOpen);
     return () => {
@@ -121,6 +98,7 @@ export default function AccessModal() {
       if (res.ok) {
         setJoined(value);
         setStatus("success");
+        window.setTimeout(() => doneRef.current?.focus(), 30);
         return;
       }
       const body = (await res.json().catch(() => null)) as { errors?: { field?: string }[] } | null;
@@ -129,27 +107,6 @@ export default function AccessModal() {
     } catch {
       fail("No hay conexión. Inténtalo de nuevo en un momento.");
     }
-  };
-
-  const share = async () => {
-    const url = window.location.origin;
-    try {
-      if (navigator.share) {
-        await navigator.share({ title: "Bengala Klearly", text: "Klearly: que te entiendan a la primera.", url });
-        return;
-      }
-      await navigator.clipboard.writeText(url);
-      setShared(true);
-      window.setTimeout(() => setShared(false), 2200);
-    } catch {
-      /* share sheet dismissed */
-    }
-  };
-
-  const useAnother = () => {
-    setStatus("idle");
-    setEmail("");
-    window.setTimeout(() => inputRef.current?.focus(), 50);
   };
 
   const submitting = status === "submitting";
@@ -168,240 +125,126 @@ export default function AccessModal() {
     >
       <div
         aria-hidden="true"
-        className={`fixed inset-0 bg-[#0B0E14]/35 backdrop-blur-md transition-opacity duration-300 ${visible ? "opacity-100" : "opacity-0"}`}
+        className={`fixed inset-0 bg-[#0B0E14]/45 backdrop-blur-sm transition-opacity duration-200 ${visible ? "opacity-100" : "opacity-0"}`}
       />
 
       <div
-        className="relative min-h-full flex items-center justify-center p-3 sm:p-6 md:p-10"
+        className="relative min-h-full flex items-center justify-center p-4"
         onClick={(e) => {
           if (e.target === e.currentTarget) close();
         }}
       >
         <div
-          className={`relative w-full max-w-4xl overflow-hidden rounded-[28px] border border-border bg-background text-foreground shadow-[0_60px_140px_-40px_rgba(11,14,20,0.45)] grid md:grid-cols-[0.9fr_1.1fr] transition-all duration-500 ${EASE} ${
-            visible ? "opacity-100 translate-y-0 scale-100" : "opacity-0 translate-y-8 scale-[0.96]"
+          className={`relative w-full max-w-[440px] rounded-3xl bg-background text-foreground border border-border shadow-[0_40px_100px_-30px_rgba(11,14,20,0.5)] px-6 pt-12 pb-7 sm:px-10 sm:pt-12 sm:pb-9 transition-opacity duration-200 ${
+            visible ? "opacity-100" : "opacity-0"
           }`}
         >
           <button
             type="button"
             onClick={close}
             aria-label="Cerrar"
-            className="absolute top-4 right-4 z-20 w-10 h-10 rounded-full bg-foreground/[0.04] border border-foreground/10 text-foreground/60 hover:text-foreground hover:bg-foreground/[0.08] transition-colors flex items-center justify-center"
+            className="absolute top-4 right-4 w-9 h-9 rounded-full text-foreground/45 hover:text-foreground hover:bg-foreground/[0.06] transition-colors flex items-center justify-center"
           >
             <svg viewBox="0 0 24 24" className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
               <path d="M6 6l12 12M18 6L6 18" />
             </svg>
           </button>
 
-          {/* Visual panel */}
-          <div className="relative hidden md:flex flex-col justify-between p-10 overflow-hidden border-r border-border bg-white">
-            <div
-              aria-hidden="true"
-              className="absolute inset-0"
-              style={{
-                background:
-                  "radial-gradient(ellipse 90% 60% at 20% 110%, rgba(239,51,51,0.16), transparent 65%), radial-gradient(ellipse 60% 40% at 90% 0%, rgba(252,182,65,0.16), transparent 70%)",
-              }}
-            />
-            <div className="relative flex items-center gap-3">
-              <KlearlyMark className="w-7 h-7 text-foreground" />
-              <span className="text-sm text-foreground/80">
-                Bengala <span className="font-semibold text-foreground">Klearly</span>
+          {success ? (
+            <div role="status" className="text-center">
+              <span className="mx-auto flex items-center justify-center w-14 h-14 rounded-full bg-accent text-white">
+                <svg viewBox="0 0 24 24" className="w-7 h-7" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M5 12.5l4.5 4.5L19 7.5" />
+                </svg>
               </span>
-            </div>
-
-            <div className="relative flex items-center gap-[3px] h-28" aria-hidden="true">
-              {Array.from({ length: BARS }).map((_, i) => (
-                <span
-                  key={i}
-                  className={`flex-1 h-full rounded-[2px] origin-center animate-eq ${i % 7 === 3 ? "bg-accent-gold" : "bg-foreground/85"}`}
-                  style={{ animationDelay: `${(i * 113) % 1000}ms`, animationDuration: `${900 + ((i * 71) % 600)}ms` }}
-                />
-              ))}
-            </div>
-
-            <div className="relative">
-              <span className="block text-[10px] font-mono uppercase tracking-[0.3em] text-foreground/40 mb-3">
-                Del otro lado de la llamada
-              </span>
-              <p className="text-2xl lg:text-3xl font-medium tracking-tight leading-snug">
-                “Perfect, that&apos;s clear.
-                <br />
-                Let&apos;s do it.”
+              <h2 id={`${id}-title`} className="mt-6 text-3xl font-medium tracking-[-0.02em]">
+                Estás dentro<span className="text-accent">.</span>
+              </h2>
+              <p className="mt-3 text-base text-foreground/70 leading-relaxed">
+                Te escribiremos a <span className="text-foreground font-medium break-all">{joined}</span> cuando sea tu turno.
               </p>
+              <button
+                ref={doneRef}
+                type="button"
+                onClick={close}
+                className="mt-8 w-full rounded-2xl bg-foreground text-background py-4 text-base font-medium hover:bg-foreground/90 transition-colors outline-none focus-visible:ring-4 focus-visible:ring-accent/25"
+              >
+                Listo
+              </button>
             </div>
-          </div>
+          ) : (
+            <>
+              <KlearlyMark className="mx-auto w-8 h-8 text-foreground" />
+              <h2 id={`${id}-title`} className="mt-6 text-center text-[1.75rem] sm:text-3xl font-medium tracking-[-0.02em] leading-[1.12] text-balance">
+                Pide acceso anticipado a Klearly
+              </h2>
+              <p className="mt-3 text-center text-base text-foreground/70 leading-relaxed text-balance">
+                Deja tu correo y te avisamos cuando sea tu turno.
+              </p>
 
-          {/* Content panel */}
-          <div className="relative p-7 pt-16 sm:p-10 md:p-12">
-            {success ? (
-              <div role="status" className="flex flex-col items-start">
-                <div className="relative w-16 h-16 mb-8">
-                  {BURST.map((b, i) => (
-                    <span
-                      key={i}
-                      aria-hidden="true"
-                      className="absolute left-1/2 top-1/2 animate-burst"
-                      style={
-                        {
-                          width: b.size,
-                          height: b.size,
-                          background: b.color,
-                          animationDelay: `${b.delay}ms`,
-                          "--dx": `${b.dx}px`,
-                          "--dy": `${b.dy}px`,
-                          "--r": `${b.r}deg`,
-                        } as React.CSSProperties
-                      }
-                    />
-                  ))}
-                  <span className="relative flex items-center justify-center w-16 h-16 rounded-full bg-accent-gold text-background animate-pop">
-                    <svg viewBox="0 0 24 24" className="w-8 h-8" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                      <path d="M5 12.5l4.5 4.5L19 7.5" className="animate-draw" />
-                    </svg>
-                  </span>
-                </div>
+              <form noValidate onSubmit={onSubmit} className="mt-8" aria-busy={submitting}>
+                <label htmlFor={`${id}-email`} className="sr-only">
+                  Tu correo electrónico
+                </label>
+                <input
+                  ref={inputRef}
+                  id={`${id}-email`}
+                  type="email"
+                  name="email"
+                  inputMode="email"
+                  autoComplete="email"
+                  autoCapitalize="none"
+                  autoCorrect="off"
+                  spellCheck={false}
+                  enterKeyHint="send"
+                  required
+                  placeholder="tu@correo.com"
+                  value={email}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    if (invalid) {
+                      setStatus("idle");
+                      setError("");
+                    }
+                  }}
+                  aria-invalid={invalid}
+                  aria-describedby={`${id}-hint`}
+                  disabled={submitting}
+                  className={`w-full rounded-2xl bg-white border px-5 py-4 text-lg text-foreground placeholder:text-foreground/35 outline-none transition-shadow focus:shadow-[0_0_0_4px_rgba(239,51,51,0.15)] disabled:opacity-60 ${
+                    invalid ? "border-accent" : "border-border focus:border-accent/60"
+                  }`}
+                />
+                {/* Honeypot for bots; Formspree discards submissions that fill it. */}
+                <input type="text" name="_gotcha" tabIndex={-1} autoComplete="off" aria-hidden="true" className="hidden" />
 
-                <h2 id={`${id}-title`} className="text-4xl md:text-5xl font-medium tracking-[-0.03em] leading-[1.02]">
-                  Estás dentro<span className="text-accent">.</span>
-                </h2>
-                <p className="mt-5 text-base md:text-lg font-light text-foreground/60 leading-relaxed">
-                  Te escribiremos a <span className="text-foreground font-normal break-all">{joined}</span> cuando
-                  sea tu turno.
+                <p id={`${id}-hint`} aria-live="polite" className={`min-h-[1.5rem] mt-2 px-1 text-sm ${invalid ? "text-accent" : "text-transparent"}`}>
+                  {invalid ? error : " "}
                 </p>
-                <p className="mt-3 text-sm font-light text-foreground/45 leading-relaxed">
-                  Mientras tanto, ¿conoces a alguien que lo necesita?
-                </p>
 
-                <div className="mt-8 flex flex-wrap items-center gap-3">
-                  <button
-                    type="button"
-                    onClick={share}
-                    className="group relative inline-flex items-center gap-2 rounded-full bg-foreground text-background px-6 py-3.5 text-sm md:text-base font-medium overflow-hidden"
-                  >
-                    <span className={`absolute inset-0 bg-accent translate-y-full group-hover:translate-y-0 transition-transform duration-500 ${EASE}`} />
-                    <span className="relative group-hover:text-white transition-colors duration-500">
-                      {shared ? "Enlace copiado" : "Compártelo"}
-                    </span>
-                    <span className="relative group-hover:text-white transition-colors duration-500">↗</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={close}
-                    className="rounded-full border border-foreground/15 px-6 py-3.5 text-sm md:text-base font-medium text-foreground/80 hover:text-foreground hover:border-foreground/30 transition-colors"
-                  >
-                    Listo
-                  </button>
-                </div>
-                <button type="button" onClick={useAnother} className="mt-6 text-sm text-foreground/40 hover:text-foreground transition-colors">
-                  Usar otro correo
+                <button
+                  type="submit"
+                  disabled={submitting}
+                  className="mt-1 w-full inline-flex items-center justify-center gap-2 rounded-2xl bg-accent text-white py-4 text-lg font-medium hover:bg-[#D92B2B] active:scale-[0.99] transition-[background-color,transform] outline-none focus-visible:ring-4 focus-visible:ring-accent/25 disabled:cursor-wait disabled:opacity-90"
+                >
+                  {submitting ? (
+                    <>
+                      <span className="w-4 h-4 rounded-full border-2 border-white/30 border-t-white animate-spin" aria-hidden="true" />
+                      Enviando
+                    </>
+                  ) : (
+                    "Quiero acceso"
+                  )}
                 </button>
-              </div>
-            ) : (
-              <>
-                <div className="md:hidden flex items-center gap-3 mb-8">
-                  <KlearlyMark className="w-6 h-6 text-foreground" />
-                  <span className="text-sm text-foreground/80">
-                    Bengala <span className="font-semibold text-foreground">Klearly</span>
-                  </span>
-                </div>
 
-                <span className="flex items-center gap-2 text-[10px] md:text-[11px] font-mono uppercase tracking-[0.3em] text-accent">
-                  <span className="relative flex h-1.5 w-1.5">
-                    <span className="absolute inline-flex h-full w-full rounded-full bg-accent-gold opacity-75 animate-ping" />
-                    <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-accent-gold" />
-                  </span>
-                  Acceso anticipado
-                </span>
-
-                <h2 id={`${id}-title`} className="mt-5 text-[2.1rem] sm:text-4xl md:text-[2.75rem] font-medium tracking-[-0.03em] leading-[1.04]">
-                  Sé de los primeros en <span className="italic font-light text-foreground/55">sonar claro</span>
-                  <span className="text-accent">.</span>
-                </h2>
-                <p className="mt-5 text-base font-light text-foreground/60 leading-relaxed">
-                  Estamos abriendo Klearly a un primer grupo de personas y equipos. Deja tu correo y
-                  guárdate un lugar.
+                <p className="mt-4 text-center text-xs text-foreground/50">
+                  Solo te escribimos para darte acceso.{" "}
+                  <a href="/politica-de-privacidad" className="underline underline-offset-2 hover:text-foreground transition-colors">
+                    Privacidad
+                  </a>
                 </p>
-
-                <ul className="mt-7 flex flex-col gap-3">
-                  {benefits.map((b) => (
-                    <li key={b} className="flex items-start gap-3 text-sm md:text-[15px] text-foreground/85">
-                      <span className="mt-[0.45em] inline-block w-1.5 h-1.5 shrink-0 bg-accent" />
-                      {b}
-                    </li>
-                  ))}
-                </ul>
-
-                <form noValidate onSubmit={onSubmit} className="mt-8" aria-busy={submitting}>
-                  <label htmlFor={`${id}-email`} className="block text-xs font-medium text-foreground/55 mb-2.5 pl-1">
-                    Tu correo
-                  </label>
-                  <div className="flex flex-col sm:flex-row gap-2.5">
-                    <input
-                      ref={inputRef}
-                      id={`${id}-email`}
-                      type="email"
-                      name="email"
-                      inputMode="email"
-                      autoComplete="email"
-                      autoCapitalize="none"
-                      autoCorrect="off"
-                      spellCheck={false}
-                      enterKeyHint="send"
-                      required
-                      placeholder="tu@correo.com"
-                      value={email}
-                      onChange={(e) => {
-                        setEmail(e.target.value);
-                        if (invalid) {
-                          setStatus("idle");
-                          setError("");
-                        }
-                      }}
-                      aria-invalid={invalid}
-                      aria-describedby={`${id}-hint`}
-                      disabled={submitting}
-                      className={`flex-1 min-w-0 rounded-2xl bg-white border px-5 py-4 text-base text-foreground placeholder:text-foreground/35 outline-none transition-all duration-300 focus:shadow-[0_0_0_5px_rgba(239,51,51,0.16)] disabled:opacity-60 ${
-                        invalid ? "border-accent/80" : "border-border focus:border-foreground/40"
-                      }`}
-                    />
-                    {/* Honeypot for bots; Formspree discards submissions that fill it. */}
-                    <input type="text" name="_gotcha" tabIndex={-1} autoComplete="off" aria-hidden="true" className="hidden" />
-                    <button
-                      type="submit"
-                      disabled={submitting}
-                      className="group relative shrink-0 inline-flex items-center justify-center gap-2 rounded-2xl bg-accent text-white px-6 py-4 text-base font-medium overflow-hidden transition-transform duration-300 active:scale-[0.98] disabled:cursor-wait shadow-[0_12px_40px_-12px_rgba(239,51,51,0.8)]"
-                    >
-                      <span className={`absolute inset-0 bg-foreground translate-y-full group-hover:translate-y-0 group-focus-visible:translate-y-0 transition-transform duration-500 ${EASE}`} />
-                      {submitting ? (
-                        <span className="relative inline-flex items-center gap-2">
-                          <span className="w-4 h-4 rounded-full border-2 border-white/30 border-t-white animate-spin" aria-hidden="true" />
-                          Enviando
-                        </span>
-                      ) : (
-                        <span className="relative inline-flex items-center gap-2 group-hover:text-background group-focus-visible:text-background transition-colors duration-500">
-                          Quiero acceso
-                          <span className={`inline-block transition-transform duration-500 ${EASE} group-hover:translate-x-0.5 group-hover:-translate-y-0.5`}>↗</span>
-                        </span>
-                      )}
-                    </button>
-                  </div>
-                  <p id={`${id}-hint`} aria-live="polite" className={`mt-3 pl-1 text-xs md:text-sm ${invalid ? "text-accent" : "text-foreground/35"}`}>
-                    {invalid ? (
-                      error
-                    ) : (
-                      <>
-                        Solo te escribimos para darte acceso.{" "}
-                        <a href="/politica-de-privacidad" className="underline decoration-foreground/25 underline-offset-2 hover:text-foreground transition-colors">
-                          Privacidad
-                        </a>
-                      </>
-                    )}
-                  </p>
-                </form>
-              </>
-            )}
-          </div>
+              </form>
+            </>
+          )}
         </div>
       </div>
     </dialog>
