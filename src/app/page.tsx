@@ -89,14 +89,6 @@ export default function Home() {
             <span className="text-xs md:text-sm text-foreground/80">
               Bengala <span className="font-semibold text-foreground">Klearly</span>
             </span>
-            <span className="h-3 w-px bg-foreground/20" />
-            <span className="flex items-center gap-2 text-[10px] md:text-[11px] font-mono uppercase tracking-[0.2em] text-accent">
-              <span className="relative flex h-1.5 w-1.5">
-                <span className="absolute inline-flex h-full w-full rounded-full bg-accent-gold opacity-75 animate-ping" />
-                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-accent-gold" />
-              </span>
-              En desarrollo
-            </span>
           </div>
 
           <h1 className="hero-halo mt-7 md:mt-8 text-[2.7rem] leading-[1] sm:text-6xl md:text-[5rem] lg:text-[6.25rem] lg:leading-[0.95] tracking-[-0.04em]">
