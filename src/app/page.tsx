@@ -8,6 +8,7 @@ import ScrollWords from "./_components/ScrollWords";
 import CallDemo from "./_components/CallDemo";
 import AccessModal from "./_components/AccessModal";
 import AccessTrigger from "./_components/AccessTrigger";
+import ProgramLogos from "./_components/ProgramLogos";
 import { BlockGlyph, KlearlyMark } from "./_components/Marks";
 import { SHOW_CALL_DEMO } from "./_components/flags";
 
@@ -120,11 +121,7 @@ export default function Home() {
             </AccessTrigger>
           </div>
 
-          <div className="mt-6 md:mt-7 flex items-center gap-3 animate-fade-up" style={{ animationDelay: "1500ms" }}>
-            <span className="inline-flex items-center rounded-full bg-white border border-border px-3 py-1.5 shadow-[0_6px_24px_-12px_rgba(11,14,20,0.25)]">
-              <Image src="/google-for-startups.png" alt="Google for Startups" width={324} height={50} className="h-[18px] md:h-5 w-auto" />
-            </span>
-          </div>
+          <ProgramLogos className="mt-7 md:mt-8 animate-fade-up" style={{ animationDelay: "1500ms" }} />
         </div>
 
         <div className="relative z-10 mt-6 md:mt-7 mb-5 animate-fade-in-slow" style={{ animationDelay: "1000ms" }}>
@@ -302,11 +299,7 @@ export default function Home() {
               Bengala crea productos de inteligencia artificial. Klearly es el que estamos
               construyendo ahora.
             </p>
-            <div className="flex items-center gap-3">
-              <span className="inline-flex items-center rounded-full bg-white px-3 py-1.5">
-                <Image src="/google-for-startups.png" alt="Google for Startups" width={324} height={50} className="h-[18px] w-auto" />
-              </span>
-            </div>
+            <ProgramLogos tone="dark" align="start" className="mt-2" />
           </div>
 
           <div className="md:col-span-6 flex gap-16 md:gap-24 md:justify-end text-sm">
@@ -369,11 +362,18 @@ export default function Home() {
                   "Real-time Audio Processing",
                 ],
                 sameAs: ["https://twitter.com/bengala_ai", "https://github.com/Bengala-Labs"],
-                memberOf: {
-                  "@type": "Organization",
-                  name: "Google for Startups",
-                  url: "https://startup.google.com",
-                },
+                memberOf: [
+                  {
+                    "@type": "Organization",
+                    name: "Google for Startups",
+                    url: "https://startup.google.com",
+                  },
+                  {
+                    "@type": "Organization",
+                    name: "NVIDIA Inception Program",
+                    url: "https://www.nvidia.com/en-us/startups/",
+                  },
+                ],
               },
               {
                 "@type": "SoftwareApplication",
