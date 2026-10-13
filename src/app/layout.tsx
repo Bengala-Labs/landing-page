@@ -23,14 +23,14 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL("https://bengala.ai"),
   title: {
-    default: "Bengala Klearly | Que te entiendan a la primera",
+    default: "Bengala Voice | Elimina ruido y suaviza tu acento",
     template: "%s | Bengala"
   },
-  description: "Klearly elimina el ruido de fondo y suaviza tu acento al hablar inglés, en tiempo real y con tu propia voz. Un producto de Bengala.",
+  description: "Bengala Voice elimina el ruido de fondo y suaviza tu acento al hablar inglés. Un producto de Bengala.",
   keywords: [
     "Bengala",
-    "Bengala Klearly",
-    "Klearly",
+    "Bengala Voice",
+    "Voice",
     "Eliminación de ruido en tiempo real",
     "Cancelación de ruido con IA",
     "Suavizar acento en inglés",
@@ -60,8 +60,8 @@ export const metadata: Metadata = {
     alternateLocale: ["es_MX", "es_CO", "es_AR", "en_US"],
     url: "https://bengala.ai",
     siteName: "Bengala AI",
-    title: "Bengala Klearly | Que te entiendan a la primera",
-    description: "Klearly elimina el ruido de fondo y suaviza tu acento al hablar inglés, en tiempo real y con tu propia voz. Un producto de Bengala.",
+    title: "Bengala Voice | Elimina ruido y suaviza tu acento",
+    description: "Bengala Voice elimina el ruido de fondo y suaviza tu acento al hablar inglés. Un producto de Bengala.",
     images: [
       {
         url: "/og-image.jpg",
@@ -69,13 +69,13 @@ export const metadata: Metadata = {
         width: 1200,
         height: 630,
         type: "image/jpeg",
-        alt: "Bengala Klearly - Que te entiendan a la primera",
+        alt: "Bengala Voice",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Bengala Klearly | Que te entiendan a la primera",
+    title: "Bengala Voice | Elimina ruido y suaviza tu acento",
     description: "Elimina el ruido de fondo y suaviza tu acento en inglés, en tiempo real.",
     images: ["/og-image.jpg"],
     creator: "@bengala_ai",

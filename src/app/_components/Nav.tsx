@@ -6,7 +6,7 @@ import { SHOW_CALL_DEMO } from "./flags";
 import { openAccessModal } from "./accessEvents";
 
 const links = [
-  ...(SHOW_CALL_DEMO ? [{ href: "#klearly", label: "Klearly" }] : []),
+  ...(SHOW_CALL_DEMO ? [{ href: "#voice", label: "Voice" }] : []),
   { href: "#como-funciona", label: "Cómo funciona" },
   { href: "#para-quien", label: "Para quién" },
 ];
@@ -54,7 +54,7 @@ export default function Nav() {
                 className="group relative text-sm text-background/60 hover:text-background transition-colors duration-300"
               >
                 {link.label}
-                <span className="absolute -bottom-1 left-0 w-full h-[1px] bg-accent origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]" />
+                <span className="absolute -bottom-1 left-0 w-full h-[1px] bg-background origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]" />
               </a>
             </li>
           ))}
@@ -64,11 +64,10 @@ export default function Nav() {
           type="button"
           aria-haspopup="dialog"
           onClick={() => openAccessModal("nav")}
-          className="group relative inline-flex items-center gap-2 text-xs md:text-sm font-medium text-foreground bg-background pl-4 pr-3.5 py-2 md:pl-5 md:pr-4 md:py-2.5 rounded-full overflow-hidden"
+          className="group relative inline-flex items-center gap-2 text-xs md:text-sm font-medium text-foreground bg-background hover:bg-white pl-4 pr-3.5 py-2 md:pl-5 md:pr-4 md:py-2.5 rounded-full overflow-hidden transition-all duration-300 hover:scale-[1.02] shadow-sm"
         >
-          <span className="absolute inset-0 bg-accent translate-y-full group-hover:translate-y-0 group-focus-visible:translate-y-0 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]" />
-          <span className="relative group-hover:text-white group-focus-visible:text-white transition-colors duration-500">Acceso anticipado</span>
-          <span className="relative inline-block group-hover:text-white group-focus-visible:text-white transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
+          <span>Acceso anticipado</span>
+          <span className="inline-block transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
             ↗
           </span>
         </button>

@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 
 export default function TermsAndConditions() {
   return (
-    <main className="relative min-h-[100dvh] w-full flex flex-col overflow-x-hidden bg-background text-foreground font-sans selection:bg-accent selection:text-white">
+    <main className="relative min-h-[100dvh] w-full flex flex-col overflow-x-hidden bg-background text-foreground font-sans selection:bg-foreground selection:text-background">
       {/* Noise Overlay */}
       <div
         className="fixed inset-0 z-50 opacity-[0.05] mix-blend-overlay pointer-events-none"
@@ -43,8 +43,8 @@ export default function TermsAndConditions() {
               className="group relative text-xs md:text-sm font-medium tracking-wide text-foreground"
             >
               Contacto Legal
-              <span className="absolute -bottom-1 left-0 w-full h-[1px] bg-accent origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]" />
-              <span className="ml-1 text-accent inline-block">↗</span>
+              <span className="absolute -bottom-1 left-0 w-full h-[1px] bg-foreground origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]" />
+              <span className="ml-1 text-foreground inline-block">↗</span>
             </a>
           </div>
         </div>
@@ -53,7 +53,7 @@ export default function TermsAndConditions() {
       {/* Page Header */}
       <header className="relative pt-32 pb-12 md:pt-40 md:pb-16 border-b border-border/60">
         <div className="w-full max-w-[1200px] mx-auto px-6 md:px-16">
-          <span className="text-[10px] md:text-xs tracking-[0.4em] font-mono uppercase text-accent mb-4 block">
+          <span className="text-[10px] md:text-xs tracking-[0.4em] font-mono uppercase text-foreground/60 mb-4 block">
             Aspectos Legales
           </span>
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-medium tracking-tight">
@@ -243,17 +243,17 @@ export default function TermsAndConditions() {
               © {new Date().getFullYear()} Bengala Labs SRL. Todos los derechos reservados.
             </p>
             <div className="flex items-center gap-6 text-xs font-light text-background/50">
-              <a href="/" className="hover:text-accent transition-colors">
+              <a href="/" className="hover:text-white transition-colors">
                 Inicio
               </a>
-              <a href="/politica-de-privacidad" className="hover:text-accent transition-colors font-medium">
+              <a href="/politica-de-privacidad" className="hover:text-white transition-colors font-medium">
                 Política de Privacidad
               </a>
             </div>
           </div>
           <div className="flex items-center gap-3">
             <span className="relative flex h-1.5 w-1.5">
-              <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-accent"></span>
+              <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-accent-gold"></span>
             </span>
             <span className="text-[10px] tracking-[0.3em] font-mono uppercase text-background/40">
               Bengala Legal

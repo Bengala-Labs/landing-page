@@ -2,10 +2,11 @@
 
 import { useCallback, useEffect, useId, useRef, useState, type FormEvent } from "react";
 import { OPEN_ACCESS_EVENT } from "./accessEvents";
-import { KlearlyMark } from "./Marks";
+import { VoiceMark } from "./Marks";
+import PlatformBadges from "./PlatformBadges";
 
 /*
- * Early-access modal for Klearly. One instance per page, opened by
+ * Early-access modal for Bengala Voice. One instance per page, opened by
  * AccessTrigger buttons. Single purpose: collect an email. Posts it to
  * Formspree in the background. Nothing is persisted between visits.
  */
@@ -79,7 +80,7 @@ export default function AccessModal() {
     const form = new FormData(e.currentTarget);
     const data = new FormData();
     data.append("email", value);
-    data.append("_subject", "Nuevo acceso anticipado a Klearly");
+    data.append("_subject", "Nuevo acceso anticipado a Bengala Voice");
     data.append("_gotcha", String(form.get("_gotcha") ?? ""));
     data.append("source", source);
     data.append("page", window.location.href);
@@ -152,13 +153,13 @@ export default function AccessModal() {
 
           {success ? (
             <div role="status" className="text-center">
-              <span className="mx-auto flex items-center justify-center w-14 h-14 rounded-full bg-accent text-white">
+              <span className="mx-auto flex items-center justify-center w-14 h-14 rounded-full bg-foreground text-background">
                 <svg viewBox="0 0 24 24" className="w-7 h-7" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                   <path d="M5 12.5l4.5 4.5L19 7.5" />
                 </svg>
               </span>
               <h2 id={`${id}-title`} className="mt-6 text-3xl font-medium tracking-[-0.02em]">
-                Estás dentro<span className="text-accent">.</span>
+                Estás dentro.
               </h2>
               <p className="mt-3 text-base text-foreground/70 leading-relaxed">
                 Te escribiremos a <span className="text-foreground font-medium break-all">{joined}</span> cuando sea tu turno.
@@ -167,20 +168,23 @@ export default function AccessModal() {
                 ref={doneRef}
                 type="button"
                 onClick={close}
-                className="mt-8 w-full rounded-2xl bg-foreground text-background py-4 text-base font-medium hover:bg-foreground/90 transition-colors outline-none focus-visible:ring-4 focus-visible:ring-accent/25"
+                className="mt-8 w-full rounded-2xl bg-foreground text-background py-4 text-base font-medium hover:bg-foreground/90 transition-colors outline-none focus-visible:ring-4 focus-visible:ring-foreground/20"
               >
                 Listo
               </button>
             </div>
           ) : (
             <>
-              <KlearlyMark className="mx-auto w-8 h-8 text-foreground" />
+              <VoiceMark className="mx-auto w-8 h-8 text-foreground" />
               <h2 id={`${id}-title`} className="mt-6 text-center text-[1.75rem] sm:text-3xl font-medium tracking-[-0.02em] leading-[1.12] text-balance">
-                Pide acceso anticipado a Klearly
+                Pide acceso anticipado a Bengala Voice
               </h2>
               <p className="mt-3 text-center text-base text-foreground/70 leading-relaxed text-balance">
-                Deja tu correo y te avisamos cuando sea tu turno.
+                App de escritorio para macOS y Windows. Deja tu correo y te avisamos cuando sea tu turno.
               </p>
+              <div className="mt-4 flex justify-center">
+                <PlatformBadges />
+              </div>
 
               <form noValidate onSubmit={onSubmit} className="mt-8" aria-busy={submitting}>
                 <label htmlFor={`${id}-email`} className="sr-only">
@@ -210,21 +214,21 @@ export default function AccessModal() {
                   aria-invalid={invalid}
                   aria-describedby={`${id}-hint`}
                   disabled={submitting}
-                  className={`w-full rounded-2xl bg-white border px-5 py-4 text-lg text-foreground placeholder:text-foreground/35 outline-none transition-shadow focus:shadow-[0_0_0_4px_rgba(239,51,51,0.15)] disabled:opacity-60 ${
-                    invalid ? "border-accent" : "border-border focus:border-accent/60"
+                  className={`w-full rounded-2xl bg-white border px-5 py-4 text-lg text-foreground placeholder:text-foreground/35 outline-none transition-shadow focus:shadow-[0_0_0_4px_rgba(11,14,20,0.08)] disabled:opacity-60 ${
+                    invalid ? "border-amber-600 focus:border-amber-600" : "border-border focus:border-foreground/60"
                   }`}
                 />
                 {/* Honeypot for bots; Formspree discards submissions that fill it. */}
                 <input type="text" name="_gotcha" tabIndex={-1} autoComplete="off" aria-hidden="true" className="hidden" />
 
-                <p id={`${id}-hint`} aria-live="polite" className={`min-h-[1.5rem] mt-2 px-1 text-sm ${invalid ? "text-accent" : "text-transparent"}`}>
+                <p id={`${id}-hint`} aria-live="polite" className={`min-h-[1.5rem] mt-2 px-1 text-sm ${invalid ? "text-amber-700 font-medium" : "text-transparent"}`}>
                   {invalid ? error : " "}
                 </p>
 
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="mt-1 w-full inline-flex items-center justify-center gap-2 rounded-2xl bg-accent text-white py-4 text-lg font-medium hover:bg-[#D92B2B] active:scale-[0.99] transition-[background-color,transform] outline-none focus-visible:ring-4 focus-visible:ring-accent/25 disabled:cursor-wait disabled:opacity-90"
+                  className="mt-1 w-full inline-flex items-center justify-center gap-2 rounded-2xl bg-foreground text-background py-4 text-lg font-medium hover:bg-foreground/90 active:scale-[0.99] transition-[background-color,transform] outline-none focus-visible:ring-4 focus-visible:ring-foreground/25 disabled:cursor-wait disabled:opacity-90 shadow-[0_12px_30px_-10px_rgba(11,14,20,0.35)]"
                 >
                   {submitting ? (
                     <>

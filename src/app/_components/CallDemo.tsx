@@ -1,12 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { KlearlyMark } from "./Marks";
+import { VoiceMark } from "./Marks";
 
 const noises = ["Tráfico", "Teclado", "Ventilador", "Eco"];
 const BARS = 28;
 
-/* Illustrative call window with a Klearly switch. Auto-toggles until the visitor takes over. */
+/* Illustrative call window with a Voice switch. Auto-toggles until the visitor takes over. */
 export default function CallDemo() {
   const [on, setOn] = useState(false);
   const [touched, setTouched] = useState(false);
@@ -18,13 +18,13 @@ export default function CallDemo() {
   }, [touched]);
 
   return (
-    <div className="relative rounded-3xl border border-background/10 bg-[#10141c] p-5 md:p-8 shadow-[0_60px_120px_-40px_rgba(239,51,51,0.35)]">
+    <div className="relative rounded-3xl border border-background/10 bg-[#10141c] p-5 md:p-8 shadow-[0_60px_120px_-40px_rgba(0,0,0,0.55)]">
       {/* Header */}
       <div className="flex items-center justify-between gap-4 pb-5 border-b border-background/10">
         <span className="flex items-center gap-2.5 text-[11px] md:text-xs font-mono text-background/55">
           <span className="relative flex h-2 w-2">
-            <span className="absolute inline-flex h-full w-full rounded-full bg-accent opacity-75 animate-ping" />
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-accent" />
+            <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75 animate-ping" />
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400" />
           </span>
           En llamada · 12:04
         </span>
@@ -40,11 +40,11 @@ export default function CallDemo() {
           className="group flex items-center gap-3"
         >
           <span className="flex items-center gap-2 text-sm font-medium text-background">
-            <KlearlyMark className="w-4 h-4 text-background" />
-            Klearly
+            <VoiceMark className="w-4 h-4 text-background" />
+            Voice
           </span>
           <span
-            className={`relative w-12 h-7 rounded-full transition-colors duration-500 ${on ? "bg-accent" : "bg-background/15"}`}
+            className={`relative w-12 h-7 rounded-full transition-colors duration-500 ${on ? "bg-accent-gold" : "bg-background/15"}`}
           >
             <span
               className={`absolute top-1 left-1 w-5 h-5 rounded-full bg-background shadow transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
@@ -80,7 +80,7 @@ export default function CallDemo() {
           <span
             key={n}
             className={`px-3 py-1.5 rounded-full text-xs border transition-all duration-500 ${
-              on ? "border-background/10 text-background/30 line-through" : "border-accent/40 bg-accent/10 text-accent-light"
+              on ? "border-background/10 text-background/30 line-through" : "border-background/25 bg-background/10 text-background/75"
             }`}
           >
             {n}

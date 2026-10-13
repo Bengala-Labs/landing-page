@@ -4,13 +4,13 @@ export const dynamic = "force-static";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Bengala Klearly",
+    name: "Bengala Voice",
     short_name: "Bengala AI",
     description: "Elimina el ruido de fondo y suaviza tu acento en inglés, en tiempo real.",
     start_url: "/",
     display: "standalone",
     background_color: "#FAF9F6",
-    theme_color: "#EF3333",
+    theme_color: "#0B0E14",
     icons: [
       {
         src: "/icon-192.png",

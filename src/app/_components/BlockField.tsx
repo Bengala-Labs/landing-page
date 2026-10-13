@@ -16,7 +16,6 @@ type Props = {
   className?: string;
 };
 
-const RED = "239,51,51";
 const GOLD = "252,182,65";
 
 function hash(c: number, r: number) {
@@ -99,8 +98,7 @@ export default function BlockField({ tone = "light", focus = "right", className 
           const size = Math.max(2, cell * 0.74 * s);
           const off = (cell - size) / 2;
           const k = hash(c, r);
-          if (k < 0.045) ctx.fillStyle = `rgba(${RED},${0.3 + 0.7 * s})`;
-          else if (k < 0.07) ctx.fillStyle = `rgba(${GOLD},${0.3 + 0.7 * s})`;
+          if (k < 0.06) ctx.fillStyle = `rgba(${GOLD},${0.3 + 0.7 * s})`;
           else ctx.fillStyle = `rgba(${ink},${0.05 + 0.42 * s})`;
           ctx.fillRect(x + off, y + off, size, size);
         }

@@ -3,5 +3,5 @@
  * Hidden sections stay in the code; flip a flag to bring one back.
  */
 
-/** "Un interruptor. Otra llamada." — the Klearly on/off call simulation. */
+/** "Un interruptor. Otra llamada." — the Voice on/off call simulation. */
 export const SHOW_CALL_DEMO = false;

@@ -4,17 +4,15 @@ import { useEffect, useRef } from "react";
 
 /*
  * Decorative hero band. A voice signal drawn in brand squares flows left to
- * right; left of the Klearly line it carries noise, right of it only the
+ * right; left of the Voice line it carries noise, right of it only the
  * clean voice remains. Not interactive and deliberately quiet so the call to
  * action keeps the attention. One static frame for reduced motion.
  */
 
 const INK = "11,14,20";
-const RED = "239,51,51";
 const GOLD = "252,182,65";
 
 const ink = (a: number) => `rgba(${INK},${a.toFixed(3)})`;
-const red = (a: number) => `rgba(${RED},${a.toFixed(3)})`;
 const gold = (a: number) => `rgba(${GOLD},${a.toFixed(3)})`;
 
 function rand(a: number, b: number) {
@@ -69,8 +67,8 @@ export default function VoiceStream({ className = "" }: { className?: string }) 
       const speed = narrow ? 0.035 : 0.045;
 
       const g = ctx.createRadialGradient(sx, h / 2, 0, sx, h / 2, h * 0.7);
-      g.addColorStop(0, red(0.05));
-      g.addColorStop(1, red(0));
+      g.addColorStop(0, gold(0.06));
+      g.addColorStop(1, gold(0));
       ctx.fillStyle = g;
       ctx.fillRect(sx - h * 0.7, 0, h * 1.4, h);
 
@@ -98,7 +96,7 @@ export default function VoiceStream({ className = "" }: { className?: string }) 
             ctx.fillStyle = r === rows - 1 && v > 0.6 ? gold(0.75 * ends) : ink(k);
           } else {
             const p = rand(c * 31 + r, tq);
-            ctx.fillStyle = p < 0.05 ? red(0.4 * ends) : p < 0.08 ? gold(0.35 * ends) : ink(0.09 * ends);
+            ctx.fillStyle = p < 0.05 ? gold(0.4 * ends) : p < 0.08 ? ink(0.18 * ends) : ink(0.08 * ends);
           }
           ctx.fillRect(x, mid - (r + 1) * step + 2, sq, sq);
           ctx.fillRect(x, mid + r * step + 2, sq, sq);
@@ -107,7 +105,7 @@ export default function VoiceStream({ className = "" }: { className?: string }) 
         if (!clean && rand(c * 7, tq) < 0.07) {
           const row = Math.floor(rand(c + 97, tq + 3) * maxRows);
           const y = rand(c, tq + 1) < 0.5 ? mid - (row + 1) * step + 2 : mid + row * step + 2;
-          ctx.fillStyle = red(0.25 * ends);
+          ctx.fillStyle = ink(0.18 * ends);
           ctx.fillRect(x, y, sq, sq);
         }
       }
@@ -162,9 +160,9 @@ export default function VoiceStream({ className = "" }: { className?: string }) 
         Lo que escuchan
       </span>
 
-      <div ref={lineRef} className="absolute top-2 bottom-2 w-px -translate-x-1/2 bg-accent/40" style={{ left: "50%" }}>
-        <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 whitespace-nowrap rounded-full bg-background border border-accent/30 text-accent text-[9px] md:text-[10px] font-mono uppercase tracking-[0.25em] px-2.5 py-1">
-          Klearly
+      <div ref={lineRef} className="absolute top-2 bottom-2 w-px -translate-x-1/2 bg-foreground/20" style={{ left: "50%" }}>
+        <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 whitespace-nowrap rounded-full bg-background border border-foreground/20 text-foreground text-[9px] md:text-[10px] font-mono uppercase tracking-[0.25em] px-2.5 py-1">
+          Voice
         </span>
       </div>
     </div>

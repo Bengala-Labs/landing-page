@@ -4,13 +4,12 @@ import { useEffect, useRef } from "react";
 
 /*
  * Hero background: a fine grid of brand squares carrying sound-wave rings
- * that radiate up from the Klearly line, as if the cleaned voice spreads
+ * that radiate up from the Voice line, as if the cleaned voice spreads
  * across the page. The cursor acts as a lens that lifts nearby squares.
  * Kept faint behind the headline. One static frame for reduced motion.
  */
 
 const INK = "11,14,20";
-const RED = "239,51,51";
 const GOLD = "252,182,65";
 
 function hash(c: number, r: number) {
@@ -87,8 +86,7 @@ export default function HeroField({ className = "" }: { className?: string }) {
           const base = 0.05 * (0.6 + 0.4 * fall);
           const size = 1.2 + a * 4.2;
           const k = hash(c, r);
-          if (a > 0.35 && k < 0.05) ctx.fillStyle = `rgba(${RED},${0.35 + 0.5 * a})`;
-          else if (a > 0.35 && k < 0.09) ctx.fillStyle = `rgba(${GOLD},${0.45 + 0.5 * a})`;
+          if (a > 0.35 && k < 0.08) ctx.fillStyle = `rgba(${GOLD},${0.45 + 0.5 * a})`;
           else ctx.fillStyle = `rgba(${INK},${base + a * 0.42})`;
           ctx.fillRect(x - size / 2, y - size / 2, size, size);
         }

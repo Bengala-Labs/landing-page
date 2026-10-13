@@ -1,9 +1,9 @@
 /*
  * Brand glyphs built on the logomark's square grammar.
- * Pattern rows: R = red, G = gold, I = ink (currentColor), . = empty.
+ * Pattern rows: G = gold, I = ink (currentColor), . = empty.
  */
 
-const fills: Record<string, string> = { R: "#EF3333", G: "#FCB641", I: "currentColor" };
+const fills: Record<string, string> = { R: "currentColor", G: "#FCB641", I: "currentColor" };
 
 export function BlockGlyph({ pattern, className = "" }: { pattern: string[]; className?: string }) {
   const n = Math.max(pattern.length, ...pattern.map((r) => r.length));
@@ -20,9 +20,10 @@ export function BlockGlyph({ pattern, className = "" }: { pattern: string[]; cla
   );
 }
 
-/* Klearly mark: a K drawn in blocks, its arms resolving from noise (red) to clarity (gold). */
-export const KLEARLY_MARK = ["I...R", "I..R.", "III..", "I..G.", "I...G"];
+/* Voice mark: a V drawn in blocks, resolving cleanly into gold. */
+export const VOICE_MARK = ["I...I", "I...I", ".I.G.", ".I.G.", "..G.."];
 
-export function KlearlyMark({ className = "" }: { className?: string }) {
-  return <BlockGlyph pattern={KLEARLY_MARK} className={className} />;
+export function VoiceMark({ className = "" }: { className?: string }) {
+  return <BlockGlyph pattern={VOICE_MARK} className={className} />;
 }
+
